@@ -13,19 +13,36 @@ exports.DataBaseModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const configuration_1 = __importDefault(require("./config/configuration"));
-const database_providers_1 = require("./config/database.providers");
+const user_entity_1 = require("../user/entities/user.entity");
+const typeorm_1 = require("@nestjs/typeorm");
 let DataBaseModule = class DataBaseModule {
 };
 exports.DataBaseModule = DataBaseModule;
 exports.DataBaseModule = DataBaseModule = __decorate([
     (0, common_1.Module)({
-        imports: [config_1.ConfigModule.forRoot({
+        imports: [
+            config_1.ConfigModule.forRoot({
                 envFilePath: '.env',
                 isGlobal: true,
                 load: [configuration_1.default],
-            })],
-        providers: [...database_providers_1.databaseProviders],
-        exports: [...database_providers_1.databaseProviders],
+            }),
+            typeorm_1.TypeOrmModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                useFactory: (configService) => ({
+                    type: 'postgres',
+                    host: configService.get('database.host'),
+                    port: configService.get('database.port'),
+                    username: configService.get('database.username'),
+                    password: configService.get('database.password'),
+                    database: configService.get('database.db_name'),
+                    entities: [user_entity_1.User],
+                    synchronize: false,
+                }),
+                inject: [config_1.ConfigService],
+            })
+        ],
+        providers: [],
+        exports: [],
     })
 ], DataBaseModule);
 //# sourceMappingURL=data-base.module.js.map
