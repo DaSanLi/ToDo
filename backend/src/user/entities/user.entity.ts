@@ -1,10 +1,10 @@
-import { Column, DeleteDateColumn, Entity, PrimaryColumn } from "typeorm"; 
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"; 
 import { genderType } from "../types/types";
 
 @Entity()
 export class User { 
     
-    @PrimaryColumn('uuid') 
+    @PrimaryGeneratedColumn("uuid")
     id: string; 
     
     @Column() 
@@ -24,4 +24,5 @@ export class User {
     
     @DeleteDateColumn({ nullable: true }) 
     deleteAt?: Date; 
+
 }

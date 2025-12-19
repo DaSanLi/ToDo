@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const configuration_1 = __importDefault(require("./config/configuration"));
 const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
+const user_entity_1 = require("../user/entities/user.entity");
 let DataBaseModule = class DataBaseModule {
 };
 exports.DataBaseModule = DataBaseModule;
@@ -34,7 +35,7 @@ exports.DataBaseModule = DataBaseModule = __decorate([
                     username: configService.get('database.username'),
                     password: configService.get('database.password'),
                     database: configService.get('database.db_name'),
-                    entities: ['dist/**/*.entity.js'],
+                    entities: [user_entity_1.User],
                     migrations: ['src/database/migrations/*.ts'],
                     synchronize: true,
                 }),
@@ -45,4 +46,4 @@ exports.DataBaseModule = DataBaseModule = __decorate([
         exports: [],
     })
 ], DataBaseModule);
-//# sourceMappingURL=data-base.module.js.map
+//# sourceMappingURL=database.module.js.map

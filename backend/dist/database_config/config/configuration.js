@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = () => ({
     database: {
+        schema: 'public',
         type: 'postgres',
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),

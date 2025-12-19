@@ -1,5 +1,6 @@
 declare const _default: () => {
     database: {
+        schema: string;
         type: string;
         host: string | undefined;
         port: number;

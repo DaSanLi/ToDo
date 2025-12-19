@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import configuration from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 
 @Module({
     imports: [
@@ -20,7 +20,7 @@ import { User } from 'src/user/entities/user.entity';
                 username: configService.get('database.username'),
                 password: configService.get('database.password'),
                 database: configService.get('database.db_name'),
-                entities: ['dist/**/*.entity.js'],
+                entities: [User],
                 migrations: ['src/database/migrations/*.ts'], // Carpeta donde se generarán tus migrations
                 synchronize: true,
             }),
