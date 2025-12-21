@@ -14,63 +14,84 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
-const typeorm_2 = require("@nestjs/typeorm");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+const scripts_1 = require("../auth/scripts/scripts");
 let UserService = class UserService {
-    userRepository;
-    constructor(userRepository) {
-        this.userRepository = userRepository;
+    userModel;
+    constructor(userModel) {
+        this.userModel = userModel;
     }
     async create(createUserDto) {
-        const { firstName, lastName, email, ...userInformation } = createUserDto;
-        const userExist = await this.userRepository.findOneBy({ email });
+        const { email, password, ...userInformation } = createUserDto;
+        const userExist = await this.userModel.findOne({ email });
         if (userExist) {
             throw new common_1.BadRequestException("El usuario con el email usado ya ha sido creado, intenta otro email");
+        }
+        const hashedPassword = await (0, scripts_1.hashPassword)(createUserDto.password);
+        if (!hashedPassword) {
+            throw new common_1.InternalServerErrorException("No se ha podido crear el usuario.");
         }
         const newUser = {
             ...userInformation,
             email,
-            fullName: `${firstName} ${lastName}`
+            password: hashedPassword
         };
-        const res = await this.userRepository.save(newUser);
-        if (!res) {
+        try {
+            const userInstance = new this.userModel(newUser);
+            await userInstance.save();
+        }
+        catch {
             throw new common_1.InternalServerErrorException("No se ha podido crear el usuario.");
         }
-        return res;
+        return "Usuario creado correctamente";
     }
     async findAll() {
-        const user = await this.userRepository.find();
+        const user = await this.userModel.find().exec();
         if (!user) {
             throw new common_1.InternalServerErrorException("Ha ocurrido un error al buscar los usuarios");
         }
         return user;
     }
-    async findOne(id) {
-        const userExist = await this.userRepository.findOneBy({ id });
+    async findOne(_id) {
+        const userExist = await this.userModel.findOne({ _id });
         if (!userExist) {
             throw new common_1.BadRequestException("No existe un usuario con ese identificador");
         }
         return userExist;
     }
-    async update(id, updateUserDto) {
-        const findingUser = await this.userRepository.findOneBy({ id });
-        if (!findingUser) {
-            throw new common_1.BadRequestException("No existe un usuario con ese identificador");
+    async update(_id, updateUserDto) {
+        const userExist = await this.userModel.findOne({ _id });
+        if (!userExist) {
+            throw new common_1.InternalServerErrorException("Ha ocurrido un error al actualizar la contraseña");
         }
-        const updateUser = await this.userRepository.update(id, updateUserDto);
-        if (!updateUser) {
-            throw new common_1.InternalServerErrorException("Ha ocurrido un error al buscar los usuarios");
+        if (updateUserDto?.password) {
+            const hashedPassword = await (0, scripts_1.hashPassword)(updateUserDto?.password);
+            if (!hashedPassword) {
+                throw new common_1.BadRequestException("La contraseña ingresada es incorrecta");
+            }
+            updateUserDto = {
+                password: hashedPassword
+            };
+        }
+        try {
+            await this.userModel.findByIdAndUpdate(_id, updateUserDto, { new: true });
+        }
+        catch {
+            throw new common_1.InternalServerErrorException("Ha ocurrido un error al actualizar el usuario");
         }
         return "Se han actualizado los datso correctamente";
     }
-    async remove(id) {
-        const userExist = await this.userRepository.findOneBy({ id });
+    async remove(_id) {
+        const userExist = await this.userModel.findOne({ _id });
         if (!userExist) {
             throw new common_1.BadRequestException("No existe un usuario con ese identificador");
         }
-        const deleteUser = this.userRepository.delete({ id });
-        if (!deleteUser) {
+        try {
+            await this.userModel.deleteOne({ _id });
+        }
+        catch {
             throw new common_1.InternalServerErrorException("No se ha podido crear el usuario.");
         }
         return "Se ha borrado el usuario correctamente";
@@ -79,7 +100,7 @@ let UserService = class UserService {
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_2.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __param(0, (0, mongoose_1.InjectModel)(user_entity_1.User.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

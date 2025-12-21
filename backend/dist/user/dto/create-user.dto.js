@@ -15,8 +15,6 @@ const types_1 = require("../types/types");
 class CreateUserDto {
     email;
     password;
-    firstName;
-    lastName;
     gender;
     fullName;
 }
@@ -33,13 +31,9 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateUserDto.prototype, "firstName", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "lastName", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
 ], CreateUserDto.prototype, "gender", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "fullName", void 0);
 //# sourceMappingURL=create-user.dto.js.map

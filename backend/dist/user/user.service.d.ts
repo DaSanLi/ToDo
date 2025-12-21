@@ -1,13 +1,13 @@
-import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Model } from 'mongoose';
 export declare class UserService {
-    private userRepository;
-    constructor(userRepository: Repository<User>);
-    create(createUserDto: CreateUserDto): Promise<User>;
+    private userModel;
+    constructor(userModel: Model<User>);
+    create(createUserDto: CreateUserDto): Promise<string>;
     findAll(): Promise<User[]>;
-    findOne(id: string): Promise<User>;
-    update(id: string, updateUserDto: UpdateUserDto): Promise<string>;
-    remove(id: string): Promise<String>;
+    findOne(_id: string): Promise<User>;
+    update(_id: string, updateUserDto: UpdateUserDto): Promise<string>;
+    remove(_id: string): Promise<String>;
 }

@@ -11,10 +11,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataBaseModule = void 0;
 const common_1 = require("@nestjs/common");
+const mongoose_1 = require("@nestjs/mongoose");
 const configuration_1 = __importDefault(require("./config/configuration"));
 const config_1 = require("@nestjs/config");
-const typeorm_1 = require("@nestjs/typeorm");
-const user_entity_1 = require("../user/entities/user.entity");
 let DataBaseModule = class DataBaseModule {
 };
 exports.DataBaseModule = DataBaseModule;
@@ -26,18 +25,10 @@ exports.DataBaseModule = DataBaseModule = __decorate([
                 isGlobal: true,
                 load: [configuration_1.default],
             }),
-            typeorm_1.TypeOrmModule.forRootAsync({
+            mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: (configService) => ({
-                    type: 'postgres',
-                    host: configService.get('database.host'),
-                    port: configService.get('database.port'),
-                    username: configService.get('database.username'),
-                    password: configService.get('database.password'),
-                    database: configService.get('database.db_name'),
-                    entities: [user_entity_1.User],
-                    migrations: ['src/database/migrations/*.ts'],
-                    synchronize: true,
+                    uri: configService.get('MONGO_URI')
                 }),
                 inject: [config_1.ConfigService],
             })

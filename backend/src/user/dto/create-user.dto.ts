@@ -9,16 +9,10 @@ export class CreateUserDto {
 
     @IsString()
     password: string;
-
-    @IsString()
-    firstName: string;
-
-    @IsString()
-    lastName: string;
-
+    
     @IsString()
     gender: genderType;
-
-    //creado el campo dentro del servicio
+    
+    @IsString()
     fullName?: string;
 }

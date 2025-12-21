@@ -1,28 +1,27 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"; 
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 import { genderType } from "../types/types";
 
-@Entity()
+export type UserDocument = HydratedDocument<User>;
+
+@Schema()
 export class User { 
     
-    @PrimaryGeneratedColumn("uuid")
+    @Prop({id: true})
     id: string; 
     
-    @Column() 
+    @Prop() 
     fullName: string; 
     
-    @Column() 
+    @Prop({ unique: true }) 
     email: string;
     
-    @Column()
+    @Prop()
     password: string; 
     
-    @Column()
+    @Prop()
     gender: genderType;
-    
-    @Column({ default: true })
-    active?: boolean;
-    
-    @DeleteDateColumn({ nullable: true }) 
-    deleteAt?: Date; 
 
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);
