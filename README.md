@@ -1,2 +1,2 @@
 # ToDo
-Agenda de tareas con TypeScript, Nextjs, Nestjs y MongoDB
+Agenda de tareas con TypeScript, Nextjs, Nestjs  y MongoDB
