@@ -1,3 +1,2 @@
-import { DataSource } from "typeorm";
 import 'dotenv/config';
-export declare const dataSource: DataSource;
+export declare const dataSource: any;

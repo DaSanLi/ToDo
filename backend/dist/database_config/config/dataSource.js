@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dataSource = void 0;
 const typeorm_1 = require("typeorm");
-const user_entity_1 = require("../../user/entities/user.entity");
+const user_entity_1 = require("../../../../../../../../../../../../src/user/entities/user.entity");
 require("dotenv/config");
 exports.dataSource = new typeorm_1.DataSource({
     type: 'postgres',

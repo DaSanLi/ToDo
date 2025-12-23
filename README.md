@@ -1,2 +1,2 @@
-# Ecommerce-2
-Ecommerce con TypeScript, Nextjs, NestJs  y TypeORM
+# ToDo
+Agenda de tareas con TypeScript, Nextjs, Nestjs y MongoDB
