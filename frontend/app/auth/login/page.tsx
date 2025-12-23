@@ -1,11 +1,13 @@
 "use client"
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { loginForm } from '../types/types'
 
 function LoginPage() {
 
-    const [ form, setForm ] = useState<loginForm|null>(null)
+    const [ form, setForm ] = useState<loginForm>({
+        email: "",
+        password: "",
+    })
     //actualizar la interface registerForm con tasks[]
     const [User, setUser] = useState<loginForm|null>(null)
     const URL: string = "http://localhost:4000/auth/login"
@@ -78,7 +80,7 @@ function LoginPage() {
                                 </div>
                                 <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Entrar</button>
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                    ¿No tienes cuenta aún? <Link href="/auth/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Registrate</Link>
+                                    ¿No tienes cuenta aún? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Registrate</a>
                                 </p>
                             </form>
                         </div>
