@@ -7,14 +7,9 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-<<<<<<< HEAD
-    DataBaseModule, 
-    UserModule
-=======
     DataBaseModule,
     UserModule, 
     AuthModule
->>>>>>> dev
   ],
   controllers: [AppController],
   providers: [AppService],

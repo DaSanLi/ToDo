@@ -1,8 +1,4 @@
 export enum genderType {
-<<<<<<< HEAD
-    MALE = "male",
-    FEMALE = "female" 
-=======
     male = "male", 
     female = "female"
 }
@@ -12,5 +8,4 @@ export interface newUserType {
     password: string;
     gender: genderType;
     fullName: string;
->>>>>>> dev
 }
