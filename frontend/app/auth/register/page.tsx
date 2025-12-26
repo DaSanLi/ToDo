@@ -1,13 +1,21 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import type { registerForm } from '../types/types'
+import Link from 'next/link'
+import { UserContext } from '@/context/UserContext/UserContext'
+import { URLBASE } from '@/scripts.tsx/general-scripts/scripts'
 
 function RegisterPage() {
 
-    const [form, setForm] = useState<registerForm|null>(null)
+    const [form, setForm] = useState<registerForm | null>(null)
     //actualizar la interface registerForm con tasks[]
-    const [User, setUser] = useState<registerForm|null>(null)
-    const URL: string = "http://localhost:4000/auth/register"
+    const [error, setError] = useState<string | null>(null)
+    const URL: string = `${URLBASE}/auth/register`
+    const context = useContext(UserContext)
+    if (!context) {
+        throw new Error("UserContext must be used within UserProvider");
+    }
+    const { setUser } = context
 
 
     const saveForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -15,7 +23,7 @@ function RegisterPage() {
         const password: string = e.currentTarget.password.value
         const verifyPassword: string = e.currentTarget.verifyPassword.value
         //podria colocarse una pop encima del form para mejorar la visualización del la adventencia
-        if(password !== verifyPassword){
+        if (password !== verifyPassword) {
             alert("Tu contraseña no coincide con su verificación, vuelve a intentarlo")
             return
         }
@@ -29,72 +37,138 @@ function RegisterPage() {
     }
 
 
-    useEffect(()=>{
-        if(form){
-            fetch(URL, {
-                headers:{"Content-Type": "application/json"},
-                method: 'POST',
-                body: JSON.stringify(form),
-            })
-            .then((res)=>{
-                const respuesta = res.json()
-                if(!res.ok){
-                    //aqui podria setearse algun estado que muestre el error en el formulario
-                    console.error(respuesta)
-                    throw new Error("Error en la respuesta del servidor")
+    useEffect(() => {
+        if (form) {
+            async function sendForm() {
+                try {
+                    const request = await fetch(URL, {
+                        headers: { "Content-Type": "application/json" },
+                        method: 'POST',
+                        body: JSON.stringify(form),
+                    })
+                    const response = await request.json()
+                    if (!request.ok) {
+                        setError(response?.message)
+                    } else {
+                        setUser(() => response)
+                        setError(() => null)
+                    }
+                } catch {
+                    setError("Ha ocurrido un error, vuelve a intentarlo más tarde")
+                    throw new Error("Ha ocurrido un error al traer los datos del cliente")
                 }
-                return respuesta
-            })
-            .then((data)=> setUser(data))
-            .catch((e) => (console.error("Ha ocurrido un error al recibir los datos:", e)))
+            }
+            sendForm()
         }
-    },[form])
+    }, [form, setUser, URL])
 
-    useEffect(()=>{
-        console.log(User, "se entregan los datos del usuario")
-    },[User])
+
+    useEffect(() => {
+        if (error) {
+            setTimeout(() => {
+                setError(null)
+            }, 10000)
+        }
+    }, [error])
+
 
     return (
-        <section className="bg-gray-50 dark:bg-gray-900">
+        <section className="bg-(--bg-primary)">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-                    <img className="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
-                    Flowbite
-                </a>
-                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div className="relative w-full bg-(--bg-secondary) rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+                    {error && (
+                        <p className="absolute -top-10 left-0 text-white bg-red-800 rounded-2xl p-2">
+                            {error}
+                        </p>
+                    )}
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        <h1 className="text-xl font-bold leading-tight tracking-tight text-(--text-primary) md:text-2xl">
                             Registro
                         </h1>
-                        <form className="space-y-4 md:space-y-6" action="#" onSubmit={((e) => saveForm(e))}>
-                            <div className='h-full w-fulll grid grid-cols-2 gap-4'>
+                        <form className="space-y-4 md:space-y-6" action="#" onSubmit={(e) => saveForm(e)}>
+                            <div className="h-full w-full grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre y apellidos</label>
-                                    <input type="text" name="fullName" id="fullName" autoComplete='off' placeholder="Nombre completo" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                    <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-(--text-primary)">
+                                        Nombre y apellidos
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="fullName"
+                                        id="fullName"
+                                        autoComplete="off"
+                                        placeholder="Nombre completo"
+                                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                                        required
+                                    />
                                 </div>
                                 <div>
-                                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ingresa tu email</label>
-                                    <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="email@email.com" required />
+                                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-(--text-primary)">
+                                        Ingresa tu email
+                                    </label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        placeholder="email@email.com"
+                                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                                        required
+                                    />
                                 </div>
                                 <div>
-                                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ingresa tu contraseña</label>
-                                    <input type="password" name="password" id="password" placeholder="••••••••" autoComplete='off' className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-(--text-primary)">
+                                        Ingresa tu contraseña
+                                    </label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        id="password"
+                                        autoComplete="off"
+                                        placeholder="••••••••"
+                                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                                        required
+                                    />
                                 </div>
                                 <div>
-                                    <label htmlFor="verifyPassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Verifica tu contraseña</label>
-                                    <input type="password" name="verifyPassword" id="verifyPassword" autoComplete='off' placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                    <label htmlFor="verifyPassword" className="block mb-2 text-sm font-medium text-(--text-primary)">
+                                        Verifica tu contraseña
+                                    </label>
+                                    <input
+                                        type="password"
+                                        name="verifyPassword"
+                                        id="verifyPassword"
+                                        autoComplete="off"
+                                        placeholder="••••••••"
+                                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                                        required
+                                    />
                                 </div>
-                                <div className='col-span-2'>
-                                    <select name="gender" id="gender" className="text-white bg-gray-50 border border-gray-300 rounded-2xl w-full max-full h-auto p-0.5 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-white" required >
+                                <div className="col-span-2">
+                                    <select
+                                        name="gender"
+                                        id="gender"
+                                        className="text-(--text-primary) bg-(--bg-primary) border border-(--border-color) rounded-2xl w-full h-auto p-2.5 focus:border-(--color-primary) focus:ring-(--color-primary)"
+                                        required
+                                    >
                                         <option value="">Selecciona tu género</option>
-                                        <option value="male">masculino</option>
-                                        <option value="female">femenino</option>
+                                        <option value="male">Masculino</option>
+                                        <option value="female">Femenino</option>
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Crear cuenta</button>
-                            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                ¿Ya tienes cuenta? Ingresa aqui <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Iniciar sesión</a>
+                            <button
+                                type="submit"
+                                className="w-full text-white bg-(--color-primary) hover:bg-(--color-secondary) focus:ring-4 focus:outline-none focus:ring-(--color-primary) font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                            >
+                                Crear cuenta
+                            </button>
+                            <p className="text-sm font-light text-(--text-secondary)">
+                                ¿Ya tienes cuenta? Ingresa aqui{' '}
+                                <Link
+                                    href="/auth/login"
+                                    className="font-medium text-(--color-primary) hover:underline"
+                                >
+                                    Iniciar sesión
+                                </Link>
                             </p>
                         </form>
                     </div>

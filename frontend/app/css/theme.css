@@ -1,0 +1,40 @@
+/* Tema claro */
+[data-theme="light"] {
+    --bg-primary: #F7F9FC;
+    --bg-secondary: #FFFFFF;
+
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+
+    --color-primary: #4F7FFF;
+    --color-secondary: #6BC2A4;
+
+    --border-color: #E5E7EB;
+}
+
+/* Tema oscuro */
+[data-theme="dark"] {
+    --bg-primary: #0F172A;
+    --bg-secondary: #1E293B;
+
+    --text-primary: #E5E7EB;
+    --text-secondary: #94A3B8;
+
+    --color-primary: #60A5FA;
+    --color-secondary: #34D399;
+
+    --border-color: #334155;
+}
+
+[data-theme="midnight"] {
+    --bg-primary: #12091F;
+    --bg-secondary: #1B0F2E;
+
+    --text-primary: #FFF7ED;
+    --text-secondary: #FCD5B5;
+
+    --color-primary: #F97316;
+    --color-secondary: #F43F5E;
+
+    --border-color: #3B1D5A;
+}

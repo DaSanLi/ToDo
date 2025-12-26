@@ -8,4 +8,8 @@ interface registerForm extends loginForm {
     gender: string;
 }
 
-export type { loginForm, registerForm }
+interface UserInterface extends registerForm {
+    tasks: string[];
+}
+
+export type { loginForm, registerForm, UserInterface }
