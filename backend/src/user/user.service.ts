@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,7 +15,7 @@ export class UserService {
   ) {}
 
 
-  async create(createUserDto: CreateUserDto): Promise<string> {
+  async create(createUserDto: CreateUserDto): Promise<object> {
     const { email, password, ...userInformation } = createUserDto
     const userExist = await this.userModel.findOne({email})
     if(userExist){
@@ -36,7 +36,7 @@ export class UserService {
     }catch{
       throw new InternalServerErrorException("No se ha podido crear el usuario.")
     }
-    return "Usuario creado correctamente"
+    return {"message": "usuario creado correctamente"}
   }
 
 
@@ -58,10 +58,10 @@ export class UserService {
   }
 
 
-  async update(_id: string, updateUserDto: UpdateUserDto): Promise<string> {
+  async update( updateUserDto: UpdateUserDto, _id: Object ): Promise<object> {
     const userExist: User|null = await this.userModel.findOne({_id}) 
     if(!userExist){
-      throw new InternalServerErrorException("Ha ocurrido un error al actualizar la contraseña")
+      throw new InternalServerErrorException("El usuario no existe")
     }
     if(updateUserDto?.password){
       const hashedPassword = await hashPassword(updateUserDto?.password)
@@ -77,11 +77,11 @@ export class UserService {
     }catch{
       throw new InternalServerErrorException("Ha ocurrido un error al actualizar el usuario")
     }
-    return "Se han actualizado los datso correctamente"
+    return {"message": "usuario actualizado correctamente"}
   }
 
 
-  async remove(_id: string): Promise<String> {
+  async remove(_id: string): Promise<object> {
     const userExist: User|null = await this.userModel.findOne({_id}) 
     if(!userExist){
       throw new BadRequestException("No existe un usuario con ese identificador")
@@ -91,6 +91,6 @@ export class UserService {
     }catch{
       throw new InternalServerErrorException("No se ha podido crear el usuario.")
     }
-    return "Se ha borrado el usuario correctamente"
+    return {"message": "usuario borrado correctamente"}
   }
 }

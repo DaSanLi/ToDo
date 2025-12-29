@@ -1,21 +1,23 @@
 "use client"
 import { useContext, useEffect, useState } from 'react'
-import type { registerForm } from '../types/types'
+import type { registerForm, UserInterface } from '../types/types'
 import Link from 'next/link'
+import { fetchApi, URLBASE } from '@/scripts.tsx/general-scripts/scripts'
 import { UserContext } from '@/context/UserContext/UserContext'
-import { URLBASE } from '@/scripts.tsx/general-scripts/scripts'
+import { useRouter } from 'next/navigation'
 
 function RegisterPage() {
 
     const [form, setForm] = useState<registerForm | null>(null)
     //actualizar la interface registerForm con tasks[]
     const [error, setError] = useState<string | null>(null)
-    const URL: string = `${URLBASE}/auth/register`
+    const endPoint: string = `auth/register`
     const context = useContext(UserContext)
     if (!context) {
         throw new Error("UserContext must be used within UserProvider");
     }
     const { setUser } = context
+    const router = useRouter()
 
 
     const saveForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,27 +42,18 @@ function RegisterPage() {
     useEffect(() => {
         if (form) {
             async function sendForm() {
-                try {
-                    const request = await fetch(URL, {
-                        headers: { "Content-Type": "application/json" },
-                        method: 'POST',
-                        body: JSON.stringify(form),
-                    })
-                    const response = await request.json()
-                    if (!request.ok) {
-                        setError(response?.message)
-                    } else {
-                        setUser(() => response)
-                        setError(() => null)
-                    }
-                } catch {
-                    setError("Ha ocurrido un error, vuelve a intentarlo más tarde")
-                    throw new Error("Ha ocurrido un error al traer los datos del cliente")
-                }
+                const res = await fetchApi<UserInterface>(endPoint, {
+                    headers: { "Content-Type": "application/json" },
+                    method: 'POST',
+                    body: JSON.stringify(form),
+                    credentials: 'include'
+                })
+                setUser(res)
+                router.replace('/')
             }
             sendForm()
         }
-    }, [form, setUser, URL])
+    }, [form, setUser, router, endPoint])
 
 
     useEffect(() => {

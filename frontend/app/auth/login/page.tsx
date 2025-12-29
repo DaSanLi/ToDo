@@ -1,15 +1,14 @@
 "use client"
 import { useContext, useEffect, useState } from 'react'
-import { loginForm } from '../types/types'
+import { loginForm, UserInterface } from '../types/types'
 import Link from 'next/link'
 import { UserContext } from '@/context/UserContext/UserContext'
 import { useRouter } from 'next/navigation'
-import { URLBASE } from '@/scripts.tsx/general-scripts/scripts'
-import { url } from 'inspector'
+import { fetchApi } from '@/scripts.tsx/general-scripts/scripts'
 
 function LoginPage() {
-    const [form, setForm] = useState<loginForm|null>(null)
-    const URL: string = `${URLBASE}/auth/login`
+    const [form, setForm] = useState<loginForm | null>(null)
+    const endPoint: string = `auth/login`
     const [error, setError] = useState<string | null>(null)
     const context = useContext(UserContext)
     if (!context) {
@@ -32,37 +31,27 @@ function LoginPage() {
     useEffect(() => {
         if (form) {
             async function sendForm() {
-                try {
-                    const request = await fetch(URL, {
-                        headers: { "Content-Type": "application/json" },
-                        method: 'POST',
-                        body: JSON.stringify(form),
-                    })
-                    const response = await request.json()
-                    if (!request.ok) {
-                        setError(response?.message)
-                    }else{
-                        setUser(()=>response)
-                        setError(()=>null)
-                        router.replace('/')
-                    }
-                } catch {
-                    setError("Ha ocurrido un error, vuelve a intentarlo más tarde")
-                    throw new Error("Ha ocurrido un error al traer los datos del cliente")
-                }
+                const res = await fetchApi<UserInterface>(endPoint, {
+                    headers: { "Content-Type": "application/json" },
+                    method: 'POST',
+                    body: JSON.stringify(form),
+                    credentials: 'include'
+                })
+                setUser(res)
+                router.replace('/')
             }
             sendForm()
         }
-    }, [form, setUser, router, URL])
+    }, [form, setUser, router, endPoint])
 
 
-    useEffect(()=>{
-        if(error){
-            setTimeout(()=>{
+    useEffect(() => {
+        if (error) {
+            setTimeout(() => {
                 setError(null)
             }, 10000)
         }
-    },[error])
+    }, [error])
 
 
     return (

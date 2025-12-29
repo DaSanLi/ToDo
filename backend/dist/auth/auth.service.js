@@ -18,10 +18,13 @@ const user_entity_1 = require("../user/entities/user.entity");
 const scripts_1 = require("./scripts/scripts");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const jwt_service_1 = require("@nestjs/jwt/dist/jwt.service");
 let AuthService = class AuthService {
     userModel;
-    constructor(userModel) {
+    jwtService;
+    constructor(userModel, jwtService) {
         this.userModel = userModel;
+        this.jwtService = jwtService;
     }
     async login(LoginUserDto) {
         const { email, password } = LoginUserDto;
@@ -33,35 +36,47 @@ let AuthService = class AuthService {
         if (!verificationPassword) {
             throw new common_1.BadRequestException("La contraseña ingresada es incorrecta");
         }
-        return userExist;
+        const payload = { _id: userExist._id };
+        const token = await this.jwtService.signAsync(payload);
+        let response = {
+            email,
+            gender: userExist.gender,
+            fullName: userExist.email,
+            token
+        };
+        return response;
     }
     async register(createUserDto) {
-        const { email, password, ...userInformation } = createUserDto;
+        const { email, gender, fullName, password } = createUserDto;
         const userExist = await this.userModel.findOne({ email });
-        if (userExist) {
+        if (!userExist) {
             throw new common_1.BadRequestException("El usuario con el email usado ya ha sido creado, intenta otro email");
         }
-        const hashedPassword = await (0, scripts_1.hashPassword)(createUserDto.password);
+        const hashedPassword = await (0, scripts_1.hashPassword)(password);
         if (!hashedPassword) {
             throw new common_1.BadRequestException("La contraseña ingresada es incorrecta");
         }
         const newUser = {
-            ...userInformation,
+            fullName,
+            gender,
             email,
-            password: hashedPassword,
+            password: hashedPassword
         };
         const userInstance = new this.userModel(newUser);
         await userInstance.save();
         if (!userInstance) {
             throw new common_1.InternalServerErrorException("No se ha podido crear el usuario.");
         }
-        return userInstance;
+        const payload = { email, _id: userExist._id };
+        const token = await this.jwtService.signAsync(payload);
+        return { fullName, email, gender, token };
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_entity_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        jwt_service_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

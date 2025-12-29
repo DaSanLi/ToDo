@@ -4,7 +4,7 @@ import { ViewTransition } from 'react'
 import "./css/globals.css";
 import UserProvider from "../context/UserContext/User-provider";
 import ThemeProvider from "../context/ThemeContext/Theme-provider";
-import SwitchThemes from "@/components/switchThemes/switchThemes";
+import SwitchThemes from "@/components/optionsComponent/switchThemes/switchThemes";
 
 
 

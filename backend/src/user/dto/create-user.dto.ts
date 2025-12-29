@@ -14,5 +14,5 @@ export class CreateUserDto {
     gender: genderType;
     
     @IsString()
-    fullName?: string;
+    fullName: string;
 }

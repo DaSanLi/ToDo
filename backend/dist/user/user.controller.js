@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
+const auth_guard_1 = require("../auth/guard/auth.guard");
+const scripts_1 = require("../tasks/utilities/scripts");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -31,8 +33,8 @@ let UserController = class UserController {
     findOne(id) {
         return this.userService.findOne(id);
     }
-    update(id, updateUserDto) {
-        return this.userService.update(id, updateUserDto);
+    update(updateUserDto, request) {
+        return this.userService.update(updateUserDto, (0, scripts_1._idTransformRequest)(request.user?._id, request));
     }
     remove(id) {
         return this.userService.remove(id);
@@ -60,11 +62,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Patch)(),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
+    __metadata("design:paramtypes", [update_user_dto_1.UpdateUserDto, Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "update", null);
 __decorate([
@@ -75,11 +77,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "remove", null);
 exports.UserController = UserController = __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.UsePipes)(new common_1.ValidationPipe({
         transform: true,
         whitelist: true
     })),
-    (0, common_1.Controller)('users'),
+    (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

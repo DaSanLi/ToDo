@@ -45,7 +45,7 @@ let UserService = class UserService {
         catch {
             throw new common_1.InternalServerErrorException("No se ha podido crear el usuario.");
         }
-        return "Usuario creado correctamente";
+        return { "message": "usuario creado correctamente" };
     }
     async findAll() {
         const user = await this.userModel.find().exec();
@@ -61,10 +61,10 @@ let UserService = class UserService {
         }
         return userExist;
     }
-    async update(_id, updateUserDto) {
+    async update(updateUserDto, _id) {
         const userExist = await this.userModel.findOne({ _id });
         if (!userExist) {
-            throw new common_1.InternalServerErrorException("Ha ocurrido un error al actualizar la contraseña");
+            throw new common_1.InternalServerErrorException("El usuario no existe");
         }
         if (updateUserDto?.password) {
             const hashedPassword = await (0, scripts_1.hashPassword)(updateUserDto?.password);
@@ -81,7 +81,7 @@ let UserService = class UserService {
         catch {
             throw new common_1.InternalServerErrorException("Ha ocurrido un error al actualizar el usuario");
         }
-        return "Se han actualizado los datso correctamente";
+        return { "message": "usuario actualizado correctamente" };
     }
     async remove(_id) {
         const userExist = await this.userModel.findOne({ _id });
@@ -94,7 +94,7 @@ let UserService = class UserService {
         catch {
             throw new common_1.InternalServerErrorException("No se ha podido crear el usuario.");
         }
-        return "Se ha borrado el usuario correctamente";
+        return { "message": "usuario borrado correctamente" };
     }
 };
 exports.UserService = UserService;

@@ -5,11 +5,16 @@ interface loginForm {
 
 interface registerForm extends loginForm {
     fullName: string;
-    gender: string;
+    gender: genderType;
 }
 
 interface UserInterface extends registerForm {
     tasks: string[];
 }
 
-export type { loginForm, registerForm, UserInterface }
+enum genderType {
+    male = 'male', 
+    female = 'female'
+}
+
+export type { loginForm, registerForm, UserInterface, genderType }

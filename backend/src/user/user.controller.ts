@@ -1,13 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import type { Request } from 'express';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { _idTransformRequest } from '../tasks/utilities/scripts';
 
+
+@UseGuards(AuthGuard)
 @UsePipes(new ValidationPipe({
   transform: true,
   whitelist: true
 }))
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -26,10 +31,11 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Patch()
+  update( @Body() updateUserDto: UpdateUserDto, @Req() request: Request ) {
+    return this.userService.update(updateUserDto, _idTransformRequest(request.user?._id, request));
   }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {
