@@ -1,11 +1,11 @@
+'use client';
 import { genderType } from "@/app/auth/types/types";
-import { fetchApi } from "@/scripts.tsx/general-scripts/scripts";
+import { fetchApi } from "@/scripts.ts/general-scripts/scripts";
 import { SetStateAction, useEffect, useState } from "react";
-import { generalRes, updateOption } from "../types/types";
+import { generalRes, updateOption } from "../../types/types";
 
 type props = {
     setBlackOptionScreen: React.Dispatch<SetStateAction<boolean>>;
-    blackOptionScreen: boolean;
 }
 
 export default function UpdateBlackScreen({  setBlackOptionScreen }: props) {
@@ -34,7 +34,7 @@ export default function UpdateBlackScreen({  setBlackOptionScreen }: props) {
         if (form) {
             const changePassword = async (updateOption: updateOption): Promise<void> => {
                 const endPoint: string = `user`
-                const res = await fetchApi<generalRes>(endPoint, {
+                const res = await fetchApi<generalRes|null>(endPoint, {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
@@ -42,7 +42,9 @@ export default function UpdateBlackScreen({  setBlackOptionScreen }: props) {
                     body: JSON.stringify(updateOption),
                     credentials: 'include'
                 });
-                setMessage(res.message)
+                if(res){
+                    setMessage(res.message)
+                }
             }
             changePassword(form)
         }
@@ -56,7 +58,7 @@ export default function UpdateBlackScreen({  setBlackOptionScreen }: props) {
 
 
     return (
-        <section className="absolute w-full h-full bg-black/85 flex items-center justify-center">
+        <section className="fixed inset-0 z-50 w-screen h-screen bg-black/85 flex items-center justify-center">
             <div className="relative w-64 h-126 bg-(--bg-secondary)/95 text-white rounded-3xl py-4 px-2">
                 <h4>Ingresa tus datos</h4>
                 <p className={`rounded-2xl my-2 p-1 text-center

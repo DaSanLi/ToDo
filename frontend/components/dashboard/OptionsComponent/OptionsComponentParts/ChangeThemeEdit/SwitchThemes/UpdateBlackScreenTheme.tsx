@@ -1,5 +1,5 @@
 import { SetStateAction } from "react";
-import SwitchThemes from "./switchThemes"
+import SwitchThemes from "./SwitchThemes"
 
 type props = {
     setBlackOptionScreenTheme: React.Dispatch<SetStateAction<boolean>>;
@@ -12,7 +12,7 @@ const exitButton = () => {
 }
 
     return (
-        <section className="absolute w-full h-full bg-black/85 flex items-center justify-center">
+        <section className="fixed inset-0 z-50 w-screen h-screen bg-black/85 flex items-center justify-center">
             <div className="flex flex-col items-center relative w-56 h-44 bg-(--bg-secondary)/95 text-white rounded-3xl p-4">
                 <h4 className="flex-1">Selecciona un tema</h4>
                 <div className="flex-2 flex justify-center items-center">

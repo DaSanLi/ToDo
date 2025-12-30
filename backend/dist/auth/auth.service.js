@@ -71,6 +71,13 @@ let AuthService = class AuthService {
         const token = await this.jwtService.signAsync(payload);
         return { fullName, email, gender, token };
     }
+    async me(_id) {
+        const userExist = await this.userModel.findOne(_id);
+        if (!userExist) {
+            throw new common_1.BadRequestException("No se encuentra un usuario registrado con ese email");
+        }
+        return userExist;
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

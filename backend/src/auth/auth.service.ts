@@ -67,4 +67,13 @@ export class AuthService {
     const token = await this.jwtService.signAsync(payload)
     return { fullName, email, gender, token }
   }
+
+  async me( _id: object ): Promise<User> {
+    const userExist: User | null = await this.userModel.findOne(_id)
+    if (!userExist) {
+      throw new BadRequestException("No se encuentra un usuario registrado con ese email")
+    }
+    return userExist
+  }
+
 }

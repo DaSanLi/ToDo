@@ -1,15 +1,6 @@
-import { useContext } from 'react'
-import Header from "../header/Header"
-import { UserContext } from '@/context/UserContext/UserContext'
+import Header from "@/components/dashboard/Header/Header"
 
-const Darshboard = () => {
-
-    const context = useContext(UserContext)
-    if (!context) {
-        throw new Error("UserContext must be used within UserProvider");
-    }
-    const { user, setUser } = context
-
+function DarshboardPage() {
     return (
         <div className="w-full min-h-screen bg-(--bg-primary) text-(--text-primary) flex flex-col items-center justify-center p-4 md:p-8">
             <Header />
@@ -46,4 +37,4 @@ const Darshboard = () => {
     )
 }
 
-export default Darshboard
+export default DarshboardPage

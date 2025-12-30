@@ -1,26 +1,19 @@
-"use client"
-import Darshboard from '@/components/dashboard/darshboard'
-import { useContext, useEffect } from 'react'
-import { UserContext } from '@/context/UserContext/UserContext'
-import { Auth } from './auth/auth'
+'use server'
+import { UserInterface } from '@/app/auth/types/types';
+import { fetchAuthApi } from '@/scripts.ts/general-scripts/scripts';
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers';
 
-export default function Home() {
 
-  const context = useContext(UserContext)
-  if (!context) {
-      throw new Error("UserContext must be used within UserProvider");
-  }
-  const { user } = context
-
-  useEffect(()=>{
-    if(!user){
-      Auth()
+export default async function Home() {
+    const cookieStore = await cookies();
+    const cookieAuth = cookieStore.toString();
+    const usuarioAutenticado: UserInterface|null = await fetchAuthApi<UserInterface>('auth/me', { credentials: 'include',
+        headers: {Cookie: cookieAuth}
+    })
+    if (usuarioAutenticado) {
+        redirect('/dashboard')
+    } else {
+        redirect('/auth/login')
     }
-  },[user])
-
-  return (
-    <>
-      <Darshboard />
-    </>
-  )
 }

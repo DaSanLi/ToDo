@@ -18,6 +18,8 @@ const auth_service_1 = require("./auth.service");
 const login_auth_dto_1 = require("./dto/login-auth.dto");
 const register_auth_dto_1 = require("./dto/register-auth.dto");
 const scripts_1 = require("./scripts/scripts");
+const scripts_2 = require("../tasks/utilities/scripts");
+const auth_guard_1 = require("./guard/auth.guard");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -32,6 +34,14 @@ let AuthController = class AuthController {
         const { email, token, ...serviceResponse } = await this.authService.login(dto);
         (0, scripts_1.attachAuthCookie)(response, token);
         return { email, ...serviceResponse };
+    }
+    async me(request) {
+        console.log("ha entrado con al endpoint me");
+        const res = await this.authService.me((0, scripts_2._idTransformRequest)(request.user?._id, request));
+        return res;
+    }
+    async logout(response) {
+        response.clearCookie('auth_token');
     }
 };
 exports.AuthController = AuthController;
@@ -52,6 +62,22 @@ __decorate([
     __metadata("design:paramtypes", [register_auth_dto_1.RegisterUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)('me'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "me", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)('logout'),
+    __param(0, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

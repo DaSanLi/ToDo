@@ -30,12 +30,13 @@ function createCookie (token: string): cookieBodyType {
     }
 }
 
-//aqui podemos modificar los valores de la
+//aqui podemos modificar los valores de la cookie http
 const httpCookieConfig: CookieOptions = {
         httpOnly: true,
         sameSite: 'lax',
         secure: false,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: '/'
 }
 
 

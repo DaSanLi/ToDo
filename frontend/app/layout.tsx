@@ -4,9 +4,6 @@ import { ViewTransition } from 'react'
 import "./css/globals.css";
 import UserProvider from "../context/UserContext/User-provider";
 import ThemeProvider from "../context/ThemeContext/Theme-provider";
-import SwitchThemes from "@/components/optionsComponent/switchThemes/switchThemes";
-
-
 
 //agregar otra fuente mas amigable visualmente
 // const DST = DM_Serif_Text({

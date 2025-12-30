@@ -1,7 +1,7 @@
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { RegisterUserDto } from './dto/register-auth.dto';
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
@@ -15,4 +15,6 @@ export declare class AuthController {
         gender: import("../user/types/types").genderType;
         email: string;
     }>;
+    me(request: Request): Promise<import("../user/entities/user.entity").User>;
+    logout(response: Response): Promise<void>;
 }

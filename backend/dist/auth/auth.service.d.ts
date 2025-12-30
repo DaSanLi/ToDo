@@ -10,4 +10,5 @@ export declare class AuthService {
     constructor(userModel: Model<User>, jwtService: JwtService);
     login(LoginUserDto: LoginUserDto): Promise<userServiceResponse>;
     register(createUserDto: RegisterUserDto): Promise<userServiceResponse>;
+    me(_id: object): Promise<User>;
 }
