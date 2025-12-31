@@ -16,9 +16,9 @@ export class TasksService {
   ) {}
 
   async create(createTaskDto: CreateTaskDto, user_id: object): Promise<object> {
-    const userExist = await this.userModel.findOne({user_id})
+    const userExist = await this.userModel.findOne(user_id)
     if(!userExist){
-      throw new BadRequestException("No hay usuario registrado con ese email")
+      throw new BadRequestException("El identificador del usuario no coincide")
     }
     createTaskDto.user = user_id
     let tasksInstance = new this.tasksModel(createTaskDto);
