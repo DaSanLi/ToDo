@@ -36,7 +36,6 @@ let AuthController = class AuthController {
         return { email, ...serviceResponse };
     }
     async me(request) {
-        console.log("ha entrado con al endpoint me");
         const res = await this.authService.me((0, scripts_2._idTransformRequest)(request.user?._id, request));
         return res;
     }

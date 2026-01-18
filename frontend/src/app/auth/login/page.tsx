@@ -2,15 +2,13 @@ import LoginForm from "@/src/components/auth/login/LoginForm"
 
 function LoginPage() {
     return (
-        <section className="bg-(--bg-primary)">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <div className="relative w-full bg-(--bg-secondary) rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
-                    <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        <h1 className="text-xl font-bold leading-tight tracking-tight text-(--text-primary) md:text-2xl">
-                            Iniciar sesión
-                        </h1>
+        <section className="min-h-screen bg-(--bg-primary) flex items-center justify-center px-4">
+            <div className="w-full max-w-md bg-(--bg-secondary) rounded-lg shadow">
+                <div className="p-6 sm:p-8 space-y-4 sm:space-y-6">
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-(--text-primary)">
+                        Iniciar sesión
+                    </h1>
                     <LoginForm />
-                    </div>
                 </div>
             </div>
         </section>

@@ -38,7 +38,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('me')
   async me( @Req() request: Request ) {
-    console.log("ha entrado con al endpoint me")
     const res = await this.authService.me(_idTransformRequest(request.user?._id, request));
     return res
   }
