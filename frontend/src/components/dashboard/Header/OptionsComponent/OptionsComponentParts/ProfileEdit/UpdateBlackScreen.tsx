@@ -1,6 +1,6 @@
 'use client';
 import { genderType } from "@/src/app/auth/types/types";
-import { fetchApi } from "@/src/scripts.ts/scripts";
+import { fetchApi } from "@/src/utilities/Utility";
 import { SetStateAction, useEffect, useState } from "react";
 import { generalRes, updateOption } from "../../types/types";
 

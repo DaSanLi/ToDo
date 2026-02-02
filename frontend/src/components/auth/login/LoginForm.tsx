@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { fetchApi } from '@/src/scripts.ts/scripts'
+import { fetchApi } from '@/src/utilities/Utility'
 import { loginForm, UserInterface } from '@/src/app/auth/types/types'
 
 function LoginForm() {

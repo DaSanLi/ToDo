@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react"
-import { URLBASE } from '@/src/scripts.ts/scripts'
+import { URLBASE } from '@/src/utilities/Utility'
 import Link from 'next/link'
 import Image from 'next/image'
 import optionsIcon from '../../../../assets/settings.png'

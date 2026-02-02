@@ -1,5 +1,5 @@
 'use client'
-import { fetchApi } from "@/src/scripts.ts/scripts"
+import { fetchApi } from "@/src/utilities/Utility"
 
 type props = {
     setNewTaskPanel: React.Dispatch<React.SetStateAction<boolean>>

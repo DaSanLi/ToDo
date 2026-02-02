@@ -1,4 +1,4 @@
-import { fetchApi } from "@/src/scripts.ts/scripts"
+import { fetchApi } from "@/src/utilities/Utility"
 import NewTaskSection from "../NewTask/NewTaskSection"
 import Tasks from "./Tasks"
 import { cookies } from "next/dist/server/request/cookies";

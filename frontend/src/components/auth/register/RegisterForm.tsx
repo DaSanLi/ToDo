@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { fetchApi } from '@/src/scripts.ts/scripts'
+import { fetchApi } from '@/src/utilities/Utility'
 import { useRouter } from 'next/navigation'
 import { registerForm, UserInterface } from '@/src/app/auth/types/types'
 

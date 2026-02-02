@@ -14,7 +14,7 @@ async function bootstrap() {
         credentials: true,
     });
     app.use((0, cookie_parser_1.default)());
-    await app.listen(process.env.PORT ?? 4000);
+    await app.listen(4000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

@@ -1,4 +1,4 @@
-import { fetchApi } from "@/src/scripts.ts/scripts"
+import { fetchApi } from "@/src/utilities/Utility"
 import { UserInterface } from "../auth/types/types"
 import { cookies } from 'next/headers';
 import ProfileSection from "@/src/components/dashboard/Header/OptionsComponent/OptionsComponentParts/ProfileEdit/ProfileSection";

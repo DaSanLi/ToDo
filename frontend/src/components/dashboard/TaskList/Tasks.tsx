@@ -1,5 +1,5 @@
 'use client'
-import { fetchApi } from "@/src/scripts.ts/scripts"
+import { fetchApi } from "@/src/utilities/Utility"
 import { Task } from "./types"
 import React from "react"
 import NewTask from "../NewTask/NewTask"
@@ -40,10 +40,10 @@ function Tasks({ tasks }: Props) {
                     <article
                         key={task._id}
                         className="flex flex-col gap-3 p-4 rounded-xl
-                    bg-(--bg-secondary)
-                    border border-(--border-color)
-                    hover:shadow-md
-                    transition-shadow"
+                        bg-(--bg-secondary)
+                        border border-(--border-color)
+                        hover:shadow-md
+                        transition-shadow"
                     >
                         <header className="flex items-start justify-between">
                             <span
