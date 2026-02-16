@@ -8,21 +8,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const database_module_1 = require("./database-connection/database.module");
+const graph_ql_module_1 = require("./graph-ql/graph-ql.module");
+const auth_module_1 = require("./auth/auth.module");
+const users_module_1 = require("./users/users.module");
+const task_module_1 = require("./task/task.module");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const user_module_1 = require("./user/user.module");
-const database_module_1 = require("./database_config/database.module");
-const auth_module_1 = require("./auth/auth.module");
-const tasks_module_1 = require("./tasks/tasks.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            database_module_1.DataBaseModule,
-            user_module_1.UserModule,
-            auth_module_1.AuthModule, tasks_module_1.TasksModule
+            database_module_1.DatabaseModule,
+            graph_ql_module_1.GraphQlModule,
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
+            task_module_1.TaskModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

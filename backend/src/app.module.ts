@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
+import { DatabaseModule } from './database-connection/database.module';
+import { GraphQlModule } from './graph-ql/graph-ql.module';
+import { AuthModule } from './auth/auth.module'; 
+import { UsersModule } from './users/users.module';
+import { TaskModule } from './task/task.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { DataBaseModule } from './database_config/database.module';
-import { AuthModule } from './auth/auth.module';
-import { TasksModule } from './tasks/tasks.module';
+
 
 @Module({
   imports: [
-    DataBaseModule,
-    UserModule, 
-    AuthModule, TasksModule
+    DatabaseModule, 
+    GraphQlModule,
+    UsersModule,
+    AuthModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],

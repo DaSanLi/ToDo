@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
+const graphql_1 = require("@nestjs/graphql");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("../JWT/constants");
 let AuthGuard = class AuthGuard {
@@ -19,8 +20,9 @@ let AuthGuard = class AuthGuard {
         this.jwtService = jwtService;
     }
     async canActivate(context) {
-        const request = context.switchToHttp().getRequest();
-        const token = request?.cookies?.auth_token;
+        const ctx = graphql_1.GqlExecutionContext.create(context);
+        const request = ctx.getContext().req;
+        const token = request.headers.authorization;
         if (!token) {
             throw new common_1.UnauthorizedException("No se ha proporcionado el token");
         }
