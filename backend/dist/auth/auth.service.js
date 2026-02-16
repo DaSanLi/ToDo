@@ -14,76 +14,53 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const user_entity_1 = require("../user/entities/user.entity");
-const scripts_1 = require("./scripts/scripts");
-const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
-const jwt_service_1 = require("@nestjs/jwt/dist/jwt.service");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const user_entity_1 = require("../users/entities/user.entity");
+const auth_scripts_1 = require("./scripts/auth.scripts");
+const jwt_1 = require("@nestjs/jwt");
+const task_scripts_1 = require("../task/scripts/task.scripts");
 let AuthService = class AuthService {
-    userModel;
+    userRepository;
     jwtService;
-    constructor(userModel, jwtService) {
-        this.userModel = userModel;
+    constructor(userRepository, jwtService) {
+        this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
-    async login(LoginUserDto) {
-        const { email, password } = LoginUserDto;
-        const userExist = await this.userModel.findOne({ email });
-        if (!userExist) {
-            throw new common_1.BadRequestException("Email no encontrado");
+    async loginUser(body) {
+        const { email } = body;
+        const user = await this.userRepository.findOneBy({ email });
+        if (!user) {
+            throw new common_1.BadRequestException("Usuario no encontrado");
         }
-        const verificationPassword = await (0, scripts_1.verifyPassword)(password, userExist.password);
-        if (!verificationPassword) {
-            throw new common_1.BadRequestException("La contraseña ingresada es incorrecta");
-        }
-        const payload = { _id: userExist._id };
+        const passwordVerified = await (0, auth_scripts_1.verifyHashPassword)(body.password, user.password);
+        if (!passwordVerified)
+            return (0, task_scripts_1.BadRequestFunction)("La contraseña ingresada no coincide con la registrada");
+        const payload = { email: user.email };
         const token = await this.jwtService.signAsync(payload);
-        let response = {
-            email,
-            gender: userExist.gender,
-            fullName: userExist.email,
-            token
-        };
+        const response = { email: user.email, token: token };
         return response;
     }
-    async register(createUserDto) {
-        const { email, gender, fullName, password } = createUserDto;
-        const userExist = await this.userModel.findOne({ email });
-        if (!userExist) {
-            throw new common_1.BadRequestException("El usuario con el email usado ya ha sido creado, intenta otro email");
+    async registerUser(body) {
+        const { email } = body;
+        const user = await this.userRepository.findOneBy({ email });
+        if (!user) {
+            throw new common_1.BadRequestException("Usuario no encontrado");
         }
-        const hashedPassword = await (0, scripts_1.hashPassword)(password);
-        if (!hashedPassword) {
-            throw new common_1.BadRequestException("La contraseña ingresada es incorrecta");
-        }
-        const newUser = {
-            fullName,
-            gender,
-            email,
-            password: hashedPassword
-        };
-        const userInstance = new this.userModel(newUser);
-        await userInstance.save();
-        if (!userInstance) {
-            throw new common_1.InternalServerErrorException("No se ha podido crear el usuario.");
-        }
-        const payload = { email, _id: userExist._id };
+        const passwordVerified = await (0, auth_scripts_1.verifyHashPassword)(body.password, user.password);
+        if (!passwordVerified)
+            return (0, task_scripts_1.BadRequestFunction)("La contraseña ingresada no coincide con la registrada");
+        const payload = { username: user.email };
         const token = await this.jwtService.signAsync(payload);
-        return { fullName, email, gender, token };
-    }
-    async me(_id) {
-        const userExist = await this.userModel.findOne(_id);
-        if (!userExist) {
-            throw new common_1.BadRequestException("No se encuentra un usuario registrado con ese email");
-        }
-        return userExist;
+        const response = { email: user.email, token: token };
+        return response;
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(user_entity_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model,
-        jwt_service_1.JwtService])
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

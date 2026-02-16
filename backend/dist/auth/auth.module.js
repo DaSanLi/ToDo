@@ -9,26 +9,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
-const auth_controller_1 = require("./auth.controller");
-const mongoose_1 = require("@nestjs/mongoose");
-const user_entity_1 = require("../user/entities/user.entity");
-const jwt_module_1 = require("@nestjs/jwt/dist/jwt.module");
+const user_entity_1 = require("../users/entities/user.entity");
+const typeorm_1 = require("@nestjs/typeorm");
+const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./JWT/constants");
+const auth_resolver_1 = require("./auth.resolver");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: user_entity_1.User.name, schema: user_entity_1.UserSchema }]),
-            jwt_module_1.JwtModule.register({
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            jwt_1.JwtModule.register({
                 global: true,
                 secret: constants_1.jwtConstants.secret,
                 signOptions: { expiresIn: '3600s' },
             }),
         ],
-        controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService],
+        providers: [auth_service_1.AuthService, auth_resolver_1.AuthResolver],
+        controllers: []
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map
