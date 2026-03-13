@@ -1,7 +1,7 @@
 'use client'
 import { fetchApi } from "@/src/scripts.ts/scripts"
 import { Task } from "./types"
-import React from "react"
+import React, { useEffect } from "react"
 import NewTask from "../NewTask/NewTask"
 
 interface Props {
@@ -30,13 +30,16 @@ function Tasks({ tasks }: Props) {
         sendForm()
     }
 
+    useEffect(()=>{console.log(tasks)},[tasks])
+
     return (
         <>
-            {newTaskPanel && <NewTask setNewTaskPanel={setNewTaskPanel} requiredOptionalsInputs={false} idUpdate={idUpdate} />}
-            {tasks.length === 0
+            <h1>Hola </h1>
+            {/* {newTaskPanel && <NewTask setNewTaskPanel={setNewTaskPanel} requiredOptionalsInputs={false} idUpdate={idUpdate} />}
+            {tasks?.length === 0
                 ? <p>No tienes tareas agregadas.</p>
                 :
-                tasks.map(task => (
+                tasks?.map(task => (
                     <article
                         key={task._id}
                         className="flex flex-col gap-3 p-4 rounded-xl
@@ -87,7 +90,7 @@ function Tasks({ tasks }: Props) {
                         </div>
                     </article>
                 ))
-            }
+            } */}
         </>
     )
 }

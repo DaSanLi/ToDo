@@ -1,58 +1,95 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { LoginDto } from './dto/auth-login.dto';
-import { UserClass, userResponse } from './scripts/auth.types';
-import { verifyHashPassword } from './scripts/auth.scripts';
+import { UserClass, userResponse, VerificationResponse, ResponseWithCookie } from './scripts/auth.types';
+import { hashPassword, verifyHashPassword } from './scripts/auth.scripts';
+import { AuthCookiesService } from './scripts/auth-cookies.service';
 import { JwtService } from '@nestjs/jwt';
-import { BadRequestFunction } from '../task/scripts/task.scripts';
+import { BadRequestFunction, InternalExpectionFunction } from '../task/scripts/task.scripts';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(@InjectRepository(User) private readonly userRepository: Repository<userResponse>,
-        private readonly jwtService: JwtService
+    constructor(
+        @InjectRepository(User) private readonly userRepository: Repository<userResponse>,
+        private readonly jwtService: JwtService,
+        private readonly authCookiesService: AuthCookiesService
     ) { }
 
 
-    async loginUser(body: LoginDto): Promise<UserClass> {
+    async loginUser(body: LoginDto, res?: ResponseWithCookie): Promise<UserClass> {
         const { email } = body;
         const user = await this.userRepository.findOneBy({ email });
-        //verificacion de usuario valido
         if (!user) {
             throw new BadRequestException("Usuario no encontrado")
         }
-        // verificacion de contraseña
         const passwordVerified = await verifyHashPassword(body.password, user.password)
-        // si la variable es falsy enviara error 4xx
-        if(!passwordVerified) return BadRequestFunction("La contraseña ingresada no coincide con la registrada")
-        // gestion para crear JWT token
+        if (!passwordVerified) return BadRequestFunction("La contraseña ingresada no coincide con la registrada")
+        
         const payload = { email: user.email }
         const token = await this.jwtService.signAsync(payload)
-        //se gestiona los datos que se ennviaran dentro de la respuesta
+        
+        if (res) {
+            this.authCookiesService.setTokenCookie(res, token)
+        }
+        
         const response = { email: user.email, token: token }
         return response
     }
 
 
-        async registerUser(body: CreateUserDto): Promise<UserClass> {
+    async registerUser(body: CreateUserDto, res?: ResponseWithCookie): Promise<UserClass> {
         const { email } = body;
         const user = await this.userRepository.findOneBy({ email });
-        //verificacion de usuario valido
-        if (!user) {
-            throw new BadRequestException("Usuario no encontrado")
+        if (user) {
+            throw new BadRequestException("Email en uso, ingresa otro")
         }
-        // verificacion de contraseña
-        const passwordVerified = await verifyHashPassword(body.password, user.password)
-        // si la variable es falsy enviara error 4xx
-        if(!passwordVerified) return BadRequestFunction("La contraseña ingresada no coincide con la registrada")
-        // gestion para crear JWT token
-        const payload = { username: user.email }
+        
+        const passwordHashed = await hashPassword(body.password)
+        body.password = passwordHashed
+        if (!passwordHashed) return BadRequestFunction("Ha ocurrido un error en el registro, vuelve a internarlo")
+        
+        const newUser = await this.userRepository.save(body)
+        if (!newUser) return InternalExpectionFunction("No se ha podido registrar al usuario")
+        
+        const payload = { email: body.email }
         const token = await this.jwtService.signAsync(payload)
-        //se gestiona los datos que se ennviaran dentro de la respuesta
-        const response = { email: user.email, token: token }
+        
+        if (res) {
+            this.authCookiesService.setTokenCookie(res, token)
+        }
+        
+        const response = { email: body.email, token: token }
         return response
+    }
+
+    async findUserByEmail(email: string): Promise<userResponse | null> {
+        return await this.userRepository.findOneBy({ email });
+    }
+
+    async verifyAndRefreshToken(cookies: Record<string, string>, res: ResponseWithCookie): Promise<VerificationResponse> {
+        const email = cookies?.email;
+
+        if (!email) {
+            throw new UnauthorizedException('No se encontró email en cookies');
+        }
+
+        const user = await this.userRepository.findOneBy({ email });
+
+        if (!user) {
+            throw new UnauthorizedException('Usuario no encontrado');
+        }
+
+        const payload = { email: user.email };
+        const newToken = await this.jwtService.signAsync(payload);
+        this.authCookiesService.setTokenCookie(res, newToken);
+
+        return {
+            email,
+            message: 'Verificación exitosa',
+        };
     }
 
 }

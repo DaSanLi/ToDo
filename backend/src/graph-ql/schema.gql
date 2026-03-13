@@ -52,6 +52,11 @@ type UserClass {
   token: String!
 }
 
+type VerificationResponse {
+  message: String!
+  email: String!
+}
+
 type Query {
   """Trae todos los usuarios registrados"""
   findAllUsers: [User!]!
@@ -64,6 +69,9 @@ type Query {
 
   """Encuentra una tarea por el identificador de la tarea"""
   findOneTask(id: String!): Task!
+
+  """Verifica el usuario mediante cookies y renueva el token"""
+  verification: VerificationResponse!
 }
 
 type Mutation {
