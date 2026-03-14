@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { ObjectType, Field } from '@nestjs/graphql';
 
 
@@ -18,6 +18,10 @@ export interface RequestWithUser extends Request {
     user?: payloadType;
 }
 
+export interface ResponseWithCookie extends Response {
+    cookie: (name: string, value: string, options?: any) => this;
+}
+
 
 @ObjectType()
 export class UserClass {
@@ -25,4 +29,12 @@ export class UserClass {
     //solo hay acceso para devolver el token
     @Field({ description: "Representa un token como pase a datos sensibles del usuario relacionado"})
     token!: string;
+}
+
+@ObjectType()
+export class VerificationResponse {
+    @Field()
+    message!: string;
+    @Field()
+    email!: string;
 }

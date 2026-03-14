@@ -27,7 +27,11 @@ let AuthService = class AuthService {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
+<<<<<<< HEAD
     async loginUser(body) {
+=======
+    async loginUser(body, res) {
+>>>>>>> main
         const { email } = body;
         const user = await this.userRepository.findOneBy({ email });
         if (!user) {
@@ -38,6 +42,7 @@ let AuthService = class AuthService {
             return (0, task_scripts_1.BadRequestFunction)("La contraseña ingresada no coincide con la registrada");
         const payload = { email: user.email };
         const token = await this.jwtService.signAsync(payload);
+<<<<<<< HEAD
         const response = { email: user.email, token: token };
         return response;
     }
@@ -54,6 +59,54 @@ let AuthService = class AuthService {
         const token = await this.jwtService.signAsync(payload);
         const response = { email: user.email, token: token };
         return response;
+=======
+        if (res) {
+            (0, auth_scripts_1.setTokenCookie)(res, token);
+        }
+        const response = { email: user.email, token: token };
+        return response;
+    }
+    async registerUser(body, res) {
+        const { email } = body;
+        const user = await this.userRepository.findOneBy({ email });
+        if (user) {
+            throw new common_1.BadRequestException("Email en uso, ingresa otro");
+        }
+        const passwordHashed = await (0, auth_scripts_1.hashPassword)(body.password);
+        body.password = passwordHashed;
+        if (!passwordHashed)
+            return (0, task_scripts_1.BadRequestFunction)("Ha ocurrido un error en el registro, vuelve a internarlo");
+        const newUser = await this.userRepository.save(body);
+        if (!newUser)
+            return (0, task_scripts_1.InternalExpectionFunction)("No se ha podido registrar al usuario");
+        const payload = { email: body.email };
+        const token = await this.jwtService.signAsync(payload);
+        if (res) {
+            (0, auth_scripts_1.setTokenCookie)(res, token);
+        }
+        const response = { email: body.email, token: token };
+        return response;
+    }
+    async findUserByEmail(email) {
+        return await this.userRepository.findOneBy({ email });
+    }
+    async verifyAndRefreshToken(cookies, res) {
+        const email = cookies?.email;
+        if (!email) {
+            throw new common_1.UnauthorizedException('No se encontró email en cookies');
+        }
+        const user = await this.userRepository.findOneBy({ email });
+        if (!user) {
+            throw new common_1.UnauthorizedException('Usuario no encontrado');
+        }
+        const payload = { email: user.email };
+        const newToken = await this.jwtService.signAsync(payload);
+        (0, auth_scripts_1.setTokenCookie)(res, newToken);
+        return {
+            message: 'Verificación exitosa',
+            email: user.email,
+        };
+>>>>>>> main
     }
 };
 exports.AuthService = AuthService;
