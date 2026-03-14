@@ -3,14 +3,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { fetchApi } from '@/src/scripts.ts/scripts'
 import { useRouter } from 'next/navigation'
-import { registerForm, UserInterface } from '@/src/app/auth/types/types'
+import { registerForm } from '@/src/app/auth/types/types'
 
 function RegisterForm() {
 
     const [form, setForm] = useState<registerForm | null>(null)
-    //actualizar la interface registerForm con tasks[]
     const [error, setError] = useState<string | null>(null)
-    const endPoint: string = `auth/register`
     const router = useRouter()
 
 
@@ -36,17 +34,23 @@ function RegisterForm() {
     useEffect(() => {
         if (form) {
             async function sendForm() {
-                await fetchApi<UserInterface>(endPoint, {
+                const mutation = `mutation Register($body: CreateUserDto!) {
+                register(body: $body) {
+                    token  
+                }
+                }`
+                const variables = { body: form }
+                await fetchApi<{ register: { token: string } }>("auth/register", {
                     headers: { "Content-Type": "application/json" },
                     method: 'POST',
-                    body: JSON.stringify(form),
+                    body: JSON.stringify({ query: mutation, variables }),
                     credentials: 'include'
                 })
                 router.replace('/dashboard')
             }
             sendForm()
         }
-    }, [form, router, endPoint])
+    }, [form, router])
 
 
     useEffect(() => {

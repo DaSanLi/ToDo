@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { fetchApi } from '@/src/scripts.ts/scripts'
-import { loginForm, UserInterface } from '@/src/app/auth/types/types'
+import { loginForm } from '@/src/app/auth/types/types'
 
 function LoginForm() {
     const [form, setForm] = useState<loginForm | null>(null)
-    const endPoint: string = `auth/login`
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
 
@@ -29,21 +28,24 @@ function LoginForm() {
                 token  
             }
             }`
-            const variables = `variables = {
+            const variables = {
                 body: {
-                    email: ${form?.email}
-                    password: ${form?.password},
+                    email: form?.email,
+                    password: form?.password
                 }
-            };`
-            fetch("http://localhost:4000/graphql", {
+            };
+            fetchApi<{ login: { token: string } }>("", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", },
-                body: JSON.stringify({ query: mutation, variables: variables })
-            }).then((res) => res.json())
-                .then((data) => console.log(data))
-                .catch(e => console.error("Ha ocurrido un error:", e))
-            }
-    }, [form, router, endPoint])
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: mutation, variables }),
+                credentials: 'include'
+            }).then((data) => {
+                if (data?.login?.token) {
+                    router.replace('/dashboard')
+                }
+            }).catch(e => console.error("Ha ocurrido un error:", e))
+        }
+    }, [form, router])
 
 
     useEffect(() => {

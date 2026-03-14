@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import type { Response } from 'express';
 
 
 async function hashPassword(password: string): Promise<string> {
@@ -12,5 +13,14 @@ async function verifyHashPassword(passwordUser: string, passwordDB: string): Pro
     return isMatch
 }
 
+function setAuthCookie(res: Response, token: string) {
+    res.cookie('auth_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/'
+    });
+}
 
-export { hashPassword, verifyHashPassword }
+
+export { hashPassword, verifyHashPassword, setAuthCookie }
