@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { fetchApi } from '@/src/utilities/Utility'
+import { fetchApi } from '@/src/scripts.ts/scripts'
 import { loginForm, UserInterface } from '@/src/app/auth/types/types'
 
 function LoginForm() {
@@ -24,17 +24,25 @@ function LoginForm() {
 
     useEffect(() => {
         if (form) {
-            async function sendForm() {
-                await fetchApi<UserInterface>(endPoint, {
-                    headers: { "Content-Type": "application/json" },
-                    method: 'POST',
-                    body: JSON.stringify(form),
-                    credentials: 'include'
-                })
-                router.replace('/dashboard')
+            const mutation = `mutation Login($body: LoginDto!) {
+            login(body: $body) {
+                token  
             }
-            sendForm()
-        }
+            }`
+            const variables = `variables = {
+                body: {
+                    email: ${form?.email}
+                    password: ${form?.password},
+                }
+            };`
+            fetch("http://localhost:4000/graphql", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", },
+                body: JSON.stringify({ query: mutation, variables: variables })
+            }).then((res) => res.json())
+                .then((data) => console.log(data))
+                .catch(e => console.error("Ha ocurrido un error:", e))
+            }
     }, [form, router, endPoint])
 
 
