@@ -35,6 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hashPassword = hashPassword;
 exports.verifyHashPassword = verifyHashPassword;
+exports.setTokenCookie = setTokenCookie;
 const bcrypt = __importStar(require("bcrypt"));
 async function hashPassword(password) {
     const saltOrRounds = 10;
@@ -44,5 +45,13 @@ async function hashPassword(password) {
 async function verifyHashPassword(passwordUser, passwordDB) {
     const isMatch = await bcrypt.compare(passwordUser, passwordDB);
     return isMatch;
+}
+function setTokenCookie(res, token) {
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 3600 * 1000,
+    });
 }
 //# sourceMappingURL=auth.scripts.js.map

@@ -32,7 +32,7 @@ export class AuthCookiesService {
         request.user = payload;
     }
 
-    setTokenCookie(res: ResponseWithCookie, token: string): void {
+    setTokenCookie(res: ResponseWithCookie, token: string) {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

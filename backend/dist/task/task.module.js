@@ -13,14 +13,21 @@ const task_entity_1 = require("./entities/task.entity");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../users/entities/user.entity");
 const task_resolver_1 = require("./task.resolver");
+const auth_cookies_service_1 = require("../auth/scripts/auth-cookies.service");
 let TaskModule = class TaskModule {
 };
 exports.TaskModule = TaskModule;
 exports.TaskModule = TaskModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([task_entity_1.Task, user_entity_1.User])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([task_entity_1.Task, user_entity_1.User]),
+        ],
         controllers: [],
-        providers: [task_service_1.TaskService, task_resolver_1.TaskResolver],
+        providers: [
+            task_service_1.TaskService,
+            task_resolver_1.TaskResolver,
+            auth_cookies_service_1.AuthCookiesService
+        ],
     })
 ], TaskModule);
 //# sourceMappingURL=task.module.js.map

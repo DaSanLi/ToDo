@@ -9,19 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
-<<<<<<< HEAD
-=======
 const auth_cookies_service_1 = require("./scripts/auth-cookies.service");
->>>>>>> main
 const user_entity_1 = require("../users/entities/user.entity");
 const typeorm_1 = require("@nestjs/typeorm");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./JWT/constants");
 const auth_resolver_1 = require("./auth.resolver");
-<<<<<<< HEAD
-=======
 const auth_guard_1 = require("./guard/auth.guard");
->>>>>>> main
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -35,11 +29,7 @@ exports.AuthModule = AuthModule = __decorate([
                 signOptions: { expiresIn: '3600s' },
             }),
         ],
-<<<<<<< HEAD
-        providers: [auth_service_1.AuthService, auth_resolver_1.AuthResolver],
-=======
         providers: [auth_service_1.AuthService, auth_resolver_1.AuthResolver, auth_guard_1.AuthGuard, auth_cookies_service_1.AuthCookiesService],
->>>>>>> main
         controllers: []
     })
 ], AuthModule);

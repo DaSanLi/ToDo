@@ -1,4 +1,4 @@
-import { ErrorFactory, FactoryError } from "./FactoryError";
+import { ErrorFactory, FactoryError, UnauthorizedError, BadRequestError, ForbiddenError, InternalServerError } from './FactoryError';
 import { FetchOptions } from "./types";
 
 const URLBASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/graphql";
@@ -36,10 +36,12 @@ const processResponse = async <T>(res: Response): Promise<T> => {
   return res.json() as Promise<T>
 }
 
-export const fetchApi = async <T>(endpoint: string = URLBASE, options: FetchOptions = {}): Promise<T | null> => {
+const fetchApi = async <T>(options: FetchOptions = {}): Promise<T | null> => {
   try {
-    const res = await fetch(endpoint, options)
-    return await processResponse<T>(res)
+    const res = await fetch(URLBASE, options)
+    // if(!res.ok) processResponse<T>(res)
+    if(!res.ok) console.error("ha ocurrido un error:", await res.json())
+    return await res.json()
   } catch (error) {
     if (error instanceof FactoryError) {
       throw error
@@ -48,22 +50,4 @@ export const fetchApi = async <T>(endpoint: string = URLBASE, options: FetchOpti
   }
 }
 
-export const fetchAuthApi = async <T>(endpoint: string, options: FetchOptions = {}): Promise<T | null> => {
-  try {
-    const res = await fetch(`${URLBASE}/${endpoint}`, options)
-    
-    if (res.status === 401) {
-      createErrorFromStatus(res)
-      return null
-    }
-    
-    return await processResponse<T>(res)
-  } catch (error) {
-    if (error instanceof FactoryError) {
-      throw error
-    }
-    throw createConnectionError()
-  }
-}
-
-export { URLBASE };
+export { URLBASE, fetchApi };

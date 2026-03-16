@@ -9,18 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserClass = void 0;
+exports.VerificationResponse = exports.UserClass = void 0;
 const graphql_1 = require("@nestjs/graphql");
 let UserClass = class UserClass {
     email;
-    token;
 };
 exports.UserClass = UserClass;
 __decorate([
-    (0, graphql_1.Field)({ description: "Representa un token como pase a datos sensibles del usuario relacionado" }),
+    (0, graphql_1.Field)({ description: "Email del usuario autenticado" }),
     __metadata("design:type", String)
-], UserClass.prototype, "token", void 0);
+], UserClass.prototype, "email", void 0);
 exports.UserClass = UserClass = __decorate([
     (0, graphql_1.ObjectType)()
 ], UserClass);
+let VerificationResponse = class VerificationResponse {
+    message;
+    email;
+};
+exports.VerificationResponse = VerificationResponse;
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], VerificationResponse.prototype, "message", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], VerificationResponse.prototype, "email", void 0);
+exports.VerificationResponse = VerificationResponse = __decorate([
+    (0, graphql_1.ObjectType)()
+], VerificationResponse);
 //# sourceMappingURL=auth.types.js.map

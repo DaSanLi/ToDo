@@ -40,13 +40,15 @@ function RegisterForm() {
                 }
                 }`
                 const variables = { body: form }
-                await fetchApi<{ register: { token: string } }>("auth/register", {
+                const res = await fetchApi<{ register: { token: string } }>("auth/register", {
                     headers: { "Content-Type": "application/json" },
                     method: 'POST',
                     body: JSON.stringify({ query: mutation, variables }),
                     credentials: 'include'
                 })
-                router.replace('/dashboard')
+                if (res?.register?.token) {
+                    router.replace('/dashboard')
+                }
             }
             sendForm()
         }

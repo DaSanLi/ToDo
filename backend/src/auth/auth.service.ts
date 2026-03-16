@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { LoginDto } from './dto/auth-login.dto';
-import { UserClass, userResponse, VerificationResponse, ResponseWithCookie } from './scripts/auth.types';
+import { UserClass, userResponse, VerificationResponse, ResponseWithCookie, payloadType } from './scripts/auth.types';
 import { hashPassword, verifyHashPassword } from './scripts/auth.scripts';
 import { AuthCookiesService } from './scripts/auth-cookies.service';
 import { JwtService } from '@nestjs/jwt';
@@ -19,7 +19,7 @@ export class AuthService {
     ) { }
 
 
-    async loginUser(body: LoginDto, res?: ResponseWithCookie): Promise<UserClass> {
+    async loginUser(body: LoginDto, res: ResponseWithCookie): Promise<payloadType> {
         const { email } = body;
         const user = await this.userRepository.findOneBy({ email });
         if (!user) {
@@ -31,16 +31,13 @@ export class AuthService {
         const payload = { email: user.email }
         const token = await this.jwtService.signAsync(payload)
         
-        if (res) {
-            this.authCookiesService.setTokenCookie(res, token)
-        }
+        // this.authCookiesService.setTokenCookie(res, token)
         
-        const response = { email: user.email, token: token }
-        return response
+        return { email, token }
     }
 
 
-    async registerUser(body: CreateUserDto, res?: ResponseWithCookie): Promise<UserClass> {
+    async registerUser(body: CreateUserDto, res: ResponseWithCookie): Promise<UserClass> {
         const { email } = body;
         const user = await this.userRepository.findOneBy({ email });
         if (user) {
@@ -57,12 +54,9 @@ export class AuthService {
         const payload = { email: body.email }
         const token = await this.jwtService.signAsync(payload)
         
-        if (res) {
-            this.authCookiesService.setTokenCookie(res, token)
-        }
+        this.authCookiesService.setTokenCookie(res, token)
         
-        const response = { email: body.email, token: token }
-        return response
+        return { email: body.email }
     }
 
     async findUserByEmail(email: string): Promise<userResponse | null> {
@@ -70,24 +64,20 @@ export class AuthService {
     }
 
     async verifyAndRefreshToken(cookies: Record<string, string>, res: ResponseWithCookie): Promise<VerificationResponse> {
-        const email = cookies?.email;
+        const payload = await this.authCookiesService.verifyTokenFromCookie({ cookies } as any);
 
-        if (!email) {
-            throw new UnauthorizedException('No se encontró email en cookies');
-        }
-
-        const user = await this.userRepository.findOneBy({ email });
+        const user = await this.userRepository.findOneBy({ email: payload.email });
 
         if (!user) {
             throw new UnauthorizedException('Usuario no encontrado');
         }
 
-        const payload = { email: user.email };
-        const newToken = await this.jwtService.signAsync(payload);
+        const newPayload = { email: user.email };
+        const newToken = await this.jwtService.signAsync(newPayload);
         this.authCookiesService.setTokenCookie(res, newToken);
 
         return {
-            email,
+            email: user.email,
             message: 'Verificación exitosa',
         };
     }

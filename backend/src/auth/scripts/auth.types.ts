@@ -25,10 +25,8 @@ export interface ResponseWithCookie extends Response {
 
 @ObjectType()
 export class UserClass {
+    @Field({ description: "Email del usuario autenticado" })
     email!: string;
-    //solo hay acceso para devolver el token
-    @Field({ description: "Representa un token como pase a datos sensibles del usuario relacionado"})
-    token!: string;
 }
 
 @ObjectType()

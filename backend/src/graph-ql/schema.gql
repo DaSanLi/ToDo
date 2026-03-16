@@ -46,20 +46,15 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type UserClass {
-  """
-  Representa un token como pase a datos sensibles del usuario relacionado
-  """
-  token: String!
+  """Email del usuario autenticado"""
+  email: String!
 }
 
-<<<<<<< HEAD
-=======
 type VerificationResponse {
   message: String!
   email: String!
 }
 
->>>>>>> main
 type Query {
   """Trae todos los usuarios registrados"""
   findAllUsers: [User!]!
@@ -72,12 +67,9 @@ type Query {
 
   """Encuentra una tarea por el identificador de la tarea"""
   findOneTask(id: String!): Task!
-<<<<<<< HEAD
-=======
 
   """Verifica el usuario mediante cookies y renueva el token"""
   verification: VerificationResponse!
->>>>>>> main
 }
 
 type Mutation {

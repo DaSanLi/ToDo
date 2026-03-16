@@ -4,10 +4,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { fetchApi } from '@/src/scripts.ts/scripts'
 import { loginForm } from '@/src/app/auth/types/types'
+import { GraphQLError, GraphQLResponse, LoginResponse } from '@/src/scripts.ts/types'
 
 function LoginForm() {
     const [form, setForm] = useState<loginForm | null>(null)
-    const [error, setError] = useState<string | null>(null)
+    const [error, setError] = useState<GraphQLError[] | null>(null)
     const router = useRouter()
 
 
@@ -23,10 +24,10 @@ function LoginForm() {
 
     useEffect(() => {
         if (form) {
-            const mutation = `mutation Login($body: LoginDto!) {
-            login(body: $body) {
-                token  
-            }
+            const mutation = `mutation login($body: LoginDto!) {
+                login(body: $body) {
+                    email  
+                }
             }`
             const variables = {
                 body: {
@@ -34,16 +35,18 @@ function LoginForm() {
                     password: form?.password
                 }
             };
-            fetchApi<{ login: { token: string } }>("", {
+            fetchApi<GraphQLResponse<LoginResponse>>({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ query: mutation, variables }),
                 credentials: 'include'
             }).then((data) => {
-                if (data?.login?.token) {
+                if (data?.data?.login?.email) {
                     router.replace('/dashboard')
+                }else if(data?.errors){
+                    setError(data.errors)
                 }
-            }).catch(e => console.error("Ha ocurrido un error:", e))
+            })
         }
     }, [form, router])
 
@@ -61,10 +64,10 @@ function LoginForm() {
         <form className="space-y-4 md:space-y-6"
             onSubmit={(e) => saveForm(e)}
         >
-            {error && (
-                <p className="absolute -top-10 left-0 text-white bg-red-800 rounded-2xl p-2">
-                    {error}
-                </p>
+            {error !== null && (
+                <p className="absolute -top-10 left-0 text-white bg-red-800 rounded-2xl p-2">{
+                    error.map((item, index) => <p key={index}>{item.message}</p>)
+                }</p>
             )}
             <div>
                 <label

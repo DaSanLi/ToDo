@@ -12,12 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const graphql_1 = require("@nestjs/graphql");
-<<<<<<< HEAD
-const jwt_1 = require("@nestjs/jwt");
-const constants_1 = require("../JWT/constants");
-=======
 const auth_cookies_service_1 = require("../scripts/auth-cookies.service");
->>>>>>> main
 let AuthGuard = class AuthGuard {
     authCookiesService;
     constructor(authCookiesService) {
@@ -26,24 +21,8 @@ let AuthGuard = class AuthGuard {
     async canActivate(context) {
         const ctx = graphql_1.GqlExecutionContext.create(context);
         const request = ctx.getContext().req;
-<<<<<<< HEAD
-        const token = request.headers.authorization;
-        if (!token) {
-            throw new common_1.UnauthorizedException("No se ha proporcionado el token");
-        }
-        try {
-            const payload = await this.jwtService.verifyAsync(token, {
-                secret: constants_1.jwtConstants.secret,
-            });
-            request.user = payload;
-        }
-        catch {
-            throw new common_1.UnauthorizedException("Token no valido");
-        }
-=======
         const payload = await this.authCookiesService.verifyTokenFromCookie(request);
         this.authCookiesService.attachUserToRequest(request, payload);
->>>>>>> main
         return true;
     }
 };

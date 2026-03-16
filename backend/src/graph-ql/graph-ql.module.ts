@@ -12,7 +12,7 @@ import { GraphQLModule } from '@nestjs/graphql';
             autoSchemaFile: join(process.cwd(), './src/graph-ql/schema.gql'),
             playground: false,
             plugins: [ApolloServerPluginLandingPageLocalDefault()],
-            context: ({ req }: { req: ReqTaskAuth }) => ({ req }),
+            context: ({ req, res }: { req: ReqTaskAuth; res: any }) => ({ req, res }),
         }),
     ]
 })

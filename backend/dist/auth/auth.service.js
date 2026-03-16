@@ -18,20 +18,19 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("../users/entities/user.entity");
 const auth_scripts_1 = require("./scripts/auth.scripts");
+const auth_cookies_service_1 = require("./scripts/auth-cookies.service");
 const jwt_1 = require("@nestjs/jwt");
 const task_scripts_1 = require("../task/scripts/task.scripts");
 let AuthService = class AuthService {
     userRepository;
     jwtService;
-    constructor(userRepository, jwtService) {
+    authCookiesService;
+    constructor(userRepository, jwtService, authCookiesService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.authCookiesService = authCookiesService;
     }
-<<<<<<< HEAD
-    async loginUser(body) {
-=======
     async loginUser(body, res) {
->>>>>>> main
         const { email } = body;
         const user = await this.userRepository.findOneBy({ email });
         if (!user) {
@@ -42,29 +41,7 @@ let AuthService = class AuthService {
             return (0, task_scripts_1.BadRequestFunction)("La contraseña ingresada no coincide con la registrada");
         const payload = { email: user.email };
         const token = await this.jwtService.signAsync(payload);
-<<<<<<< HEAD
-        const response = { email: user.email, token: token };
-        return response;
-    }
-    async registerUser(body) {
-        const { email } = body;
-        const user = await this.userRepository.findOneBy({ email });
-        if (!user) {
-            throw new common_1.BadRequestException("Usuario no encontrado");
-        }
-        const passwordVerified = await (0, auth_scripts_1.verifyHashPassword)(body.password, user.password);
-        if (!passwordVerified)
-            return (0, task_scripts_1.BadRequestFunction)("La contraseña ingresada no coincide con la registrada");
-        const payload = { username: user.email };
-        const token = await this.jwtService.signAsync(payload);
-        const response = { email: user.email, token: token };
-        return response;
-=======
-        if (res) {
-            (0, auth_scripts_1.setTokenCookie)(res, token);
-        }
-        const response = { email: user.email, token: token };
-        return response;
+        return { email, token };
     }
     async registerUser(body, res) {
         const { email } = body;
@@ -81,32 +58,25 @@ let AuthService = class AuthService {
             return (0, task_scripts_1.InternalExpectionFunction)("No se ha podido registrar al usuario");
         const payload = { email: body.email };
         const token = await this.jwtService.signAsync(payload);
-        if (res) {
-            (0, auth_scripts_1.setTokenCookie)(res, token);
-        }
-        const response = { email: body.email, token: token };
-        return response;
+        this.authCookiesService.setTokenCookie(res, token);
+        return { email: body.email };
     }
     async findUserByEmail(email) {
         return await this.userRepository.findOneBy({ email });
     }
     async verifyAndRefreshToken(cookies, res) {
-        const email = cookies?.email;
-        if (!email) {
-            throw new common_1.UnauthorizedException('No se encontró email en cookies');
-        }
-        const user = await this.userRepository.findOneBy({ email });
+        const payload = await this.authCookiesService.verifyTokenFromCookie({ cookies });
+        const user = await this.userRepository.findOneBy({ email: payload.email });
         if (!user) {
             throw new common_1.UnauthorizedException('Usuario no encontrado');
         }
-        const payload = { email: user.email };
-        const newToken = await this.jwtService.signAsync(payload);
-        (0, auth_scripts_1.setTokenCookie)(res, newToken);
+        const newPayload = { email: user.email };
+        const newToken = await this.jwtService.signAsync(newPayload);
+        this.authCookiesService.setTokenCookie(res, newToken);
         return {
-            message: 'Verificación exitosa',
             email: user.email,
+            message: 'Verificación exitosa',
         };
->>>>>>> main
     }
 };
 exports.AuthService = AuthService;
@@ -114,6 +84,7 @@ exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        auth_cookies_service_1.AuthCookiesService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

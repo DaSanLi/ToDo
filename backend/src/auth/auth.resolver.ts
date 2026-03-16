@@ -1,14 +1,18 @@
 import { Resolver, Args, Mutation, Query, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/auth-login.dto';
-import { UserClass, VerificationResponse, ResponseWithCookie, RequestWithUser } from './scripts/auth.types';
+import { UserClass, VerificationResponse, ResponseWithCookie, RequestWithUser, payloadType } from './scripts/auth.types';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthCookiesService } from './scripts/auth-cookies.service';
 
 @Resolver()
 export class AuthResolver {
 
-    constructor(private authService: AuthService){}
+    constructor(
+        private authService: AuthService, 
+        private readonly authCookiesService: AuthCookiesService
+    ){}
 
     @UsePipes(new ValidationPipe())
     @Mutation(() => UserClass, {description: "Requiere las credenciales de un usuario registrado y devuelve un token"})
@@ -16,7 +20,9 @@ export class AuthResolver {
         @Args('body') body: LoginDto,
         @Context() context: { res: ResponseWithCookie }
     ): Promise<UserClass> {
-        return this.authService.loginUser(body, context.res);
+        const payload = await this.authService.loginUser(body, context.res);
+        this.authCookiesService.setTokenCookie(context.res, payload.token)
+        return {email: payload.email}
     }
 
     @UsePipes(new ValidationPipe())
