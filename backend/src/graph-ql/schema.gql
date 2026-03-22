@@ -40,9 +40,6 @@ type Mutation {
   """Crea una nueva tarea"""
   createTask(createTaskDto: CreateTaskDto!): String!
 
-  """Crea un nuevo usuario"""
-  createUser(request: CreateUserDto!): User!
-
   """Borra un usuario de manera permanente"""
   hardDeleteUser(id: String!): String!
 

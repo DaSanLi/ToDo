@@ -1,13 +1,11 @@
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 export declare class UsersResolver {
     private readonly usersService;
     constructor(usersService: UsersService);
     findAllUsers(): Promise<User[]>;
     findOneUser(id: string): Promise<User>;
-    createUser(request: CreateUserDto): Promise<User>;
     updateUser(id: string, body: UpdateUserDto): Promise<string>;
     softDeleteUSer(id: string): Promise<string>;
     cancelSoftDelete(id: string): Promise<string>;

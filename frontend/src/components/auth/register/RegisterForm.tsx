@@ -48,43 +48,43 @@ function RegisterForm() {
     }
 
     return (
-        <form className="space-y-4 md:space-y-6" onSubmit={(e) => saveForm(e)}>
+        <form className="space-y-4" onSubmit={(e) => saveForm(e)}>
             {error && (
-                <p className="absolute -top-10 left-0 text-white bg-red-800 rounded-2xl p-2">
+                <p className="text-white bg-red-800 rounded-2xl p-2 text-sm text-center">
                     {error}
                 </p>
             )}
-            <div className="h-full w-full grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-(--text-primary)">
-                        Nombre y apellidos
+                        Nombre completo
                     </label>
                     <input
                         type="text"
                         name="fullName"
                         id="fullName"
                         autoComplete="off"
-                        placeholder="Nombre completo"
-                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                        placeholder="Tu nombre"
+                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-base rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-3"
                         required
                     />
                 </div>
                 <div>
                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-(--text-primary)">
-                        Ingresa tu email
+                        Email
                     </label>
                     <input
                         type="email"
                         name="email"
                         id="email"
                         placeholder="email@email.com"
-                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-base rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-3"
                         required
                     />
                 </div>
                 <div>
                     <label htmlFor="password" className="block mb-2 text-sm font-medium text-(--text-primary)">
-                        Ingresa tu contraseña
+                        Contraseña
                     </label>
                     <input
                         type="password"
@@ -92,13 +92,13 @@ function RegisterForm() {
                         id="password"
                         autoComplete="off"
                         placeholder="••••••••"
-                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-base rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-3"
                         required
                     />
                 </div>
                 <div>
                     <label htmlFor="verifyPassword" className="block mb-2 text-sm font-medium text-(--text-primary)">
-                        Verifica tu contraseña
+                        Confirmar contraseña
                     </label>
                     <input
                         type="password"
@@ -106,15 +106,18 @@ function RegisterForm() {
                         id="verifyPassword"
                         autoComplete="off"
                         placeholder="••••••••"
-                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-sm rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                        className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) text-base rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-3"
                         required
                     />
                 </div>
-                <div className="col-span-2">
+                <div className="sm:col-span-2">
+                    <label htmlFor="gender" className="block mb-2 text-sm font-medium text-(--text-primary)">
+                        Género
+                    </label>
                     <select
                         name="gender"
                         id="gender"
-                        className="text-(--text-primary) bg-(--bg-primary) border border-(--border-color) rounded-2xl w-full h-auto p-2.5 focus:border-(--color-primary) focus:ring-(--color-primary)"
+                        className="text-(--text-primary) bg-(--bg-primary) border border-(--border-color) rounded-lg w-full p-3 focus:border-(--color-primary) focus:ring-(--color-primary) text-base"
                         required
                     >
                         <option value="">Selecciona tu género</option>
@@ -126,12 +129,12 @@ function RegisterForm() {
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full text-white bg-(--color-primary) hover:bg-(--color-secondary) focus:ring-4 focus:outline-none focus:ring-(--color-primary) font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                className="w-full text-white bg-(--color-primary) hover:bg-(--color-secondary) focus:ring-4 focus:outline-none focus:ring-(--color-primary) font-medium rounded-lg text-base px-5 py-3 text-center transition-colors"
             >
                 {loading ? 'Creando cuenta...' : 'Crear cuenta'}
             </button>
-            <p className="text-sm font-light text-(--text-secondary)">
-                ¿Ya tienes cuenta? Ingresa aqui{' '}
+            <p className="text-sm font-light text-(--text-secondary) text-center">
+                ¿Ya tienes cuenta?{' '}
                 <Link
                     href="/auth/login"
                     className="font-medium text-(--color-primary) hover:underline"

@@ -1,9 +1,7 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity'
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
 
 @Resolver()
 export class UsersResolver {
@@ -21,13 +19,6 @@ export class UsersResolver {
     @Query(() => User, {description: "Encuentra un usuario por su identificador"})
     findOneUser(@Args("id") id: string) {
         return this.usersService.findOneUser(id);
-    }
-
-
-    @UsePipes(new ValidationPipe)
-    @Mutation(() => User, {description: "Crea un nuevo usuario"})
-    createUser(@Args('request') request: CreateUserDto) {
-        return this.usersService.createUser(request);
     }
 
     @UsePipes(new ValidationPipe)

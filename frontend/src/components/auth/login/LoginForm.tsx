@@ -38,14 +38,14 @@ function LoginForm() {
     }
 
     return (
-        <form className="space-y-4 md:space-y-6"
+        <form className="space-y-4"
             onSubmit={(e) => {
                 saveForm(e)
                 setTimeout(() => {}, 100)
             }}
         >
             {error !== null && (
-                <p className="absolute -top-10 left-0 text-white bg-red-800 rounded-2xl p-2">
+                <p className="text-white bg-red-800 rounded-2xl p-2 text-sm text-center">
                     {error}
                 </p>
             )}
@@ -54,13 +54,13 @@ function LoginForm() {
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-(--text-primary)"
                 >
-                    Ingresa email
+                    Email
                 </label>
                 <input
                     type="email"
                     name="email"
                     id="email"
-                    className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                    className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-3 text-base"
                     placeholder="name@company.com"
                     required
                 />
@@ -70,14 +70,14 @@ function LoginForm() {
                     htmlFor="password"
                     className="block mb-2 text-sm font-medium text-(--text-primary)"
                 >
-                    Password
+                    Contraseña
                 </label>
                 <input
                     type="password"
                     name="password"
                     id="password"
                     placeholder="••••••••"
-                    className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-2.5"
+                    className="bg-(--bg-primary) border border-(--border-color) text-(--text-primary) rounded-lg focus:ring-(--color-primary) focus:border-(--color-primary) block w-full p-3 text-base"
                     required
                 />
             </div>
@@ -96,31 +96,25 @@ function LoginForm() {
                             htmlFor="remember"
                             className="text-(--text-secondary)"
                         >
-                            Recuerdame
+                            Recuérdame
                         </label>
                     </div>
                 </div>
-                <a
-                    href="#"
-                    className="text-(--color-primary) hover:underline text-sm font-medium"
-                >
-                    ¿Olvidaste tu contraseña?
-                </a>
             </div>
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full text-white bg-(--color-primary) hover:bg-(--color-secondary) focus:ring-4 focus:outline-none focus:ring-(--color-primary) font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                className="w-full text-white bg-(--color-primary) hover:bg-(--color-secondary) focus:ring-4 focus:outline-none focus:ring-(--color-primary) font-medium rounded-lg text-base px-5 py-3 text-center transition-colors"
             >
                 {loading ? 'Cargando...' : 'Entrar'}
             </button>
-            <p className="text-sm font-light text-(--text-secondary)">
-                ¿No tienes cuenta aún?{' '}
+            <p className="text-sm font-light text-(--text-secondary) text-center">
+                ¿No tienes cuenta?{' '}
                 <Link
                     href="/auth/register"
                     className="font-medium text-(--color-primary) hover:underline"
                 >
-                    Registrate
+                    Regístrate
                 </Link>
             </p>
         </form>
