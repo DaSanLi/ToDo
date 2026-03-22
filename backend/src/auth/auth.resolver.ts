@@ -5,6 +5,7 @@ import { UserClass, VerificationResponse, ResponseWithCookie, RequestWithUser, p
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthCookiesService } from './scripts/auth-cookies.service';
+import { User } from '../users/entities/user.entity';
 
 @Resolver()
 export class AuthResolver {
@@ -38,5 +39,21 @@ export class AuthResolver {
     async verification(@Context() context: { req: RequestWithUser; res: ResponseWithCookie }): Promise<VerificationResponse> {
         const cookies = context.req?.cookies;
         return this.authService.verifyAndRefreshToken(cookies, context.res);
+    }
+
+    @Query(() => User, { description: "Obtiene el usuario actualmente autenticado" })
+    async me(@Context() context: { req: RequestWithUser }): Promise<User> {
+        const payload = await this.authCookiesService.verifyTokenFromCookie(context.req);
+        const user = await this.authService.findUserByEmail(payload.email);
+        if (!user) {
+            throw new Error('Usuario no encontrado');
+        }
+        return user as User;
+    }
+
+    @Mutation(() => String, { description: "Cierra la sesión del usuario clears la cookie" })
+    async logout(@Context() context: { res: ResponseWithCookie }): Promise<string> {
+        context.res.clearCookie('token');
+        return "Sesión cerrada exitosamente";
     }
 }

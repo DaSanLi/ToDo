@@ -19,6 +19,10 @@ export class User {
     @Field(() => String, {description: "Contraseña de usuario"})
     password!: string;
 
+    @Column({ type: "varchar"})
+    @Field(() => String, {description: "Nombre completo del usuario"})
+    fullName!: string;
+
     @Column({ type: "varchar", nullable: false })
     @Field(() => String, {description: "Género"})
     gender!: gender;

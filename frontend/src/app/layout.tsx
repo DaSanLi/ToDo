@@ -3,6 +3,7 @@ import { ViewTransition } from 'react'
 // import { DM_Serif_Text } from "next/font/google";
 import "./css/globals.css";
 import ThemeProvider from "../context/ThemeContext/Theme-provider";
+import ApolloWrapper from "@/src/components/ApolloWrapper";
 
 //agregar otra fuente mas amigable visualmente
 // const DST = DM_Serif_Text({
@@ -26,9 +27,11 @@ export default function RootLayout({
         // className={`${DST.className} antialiased`}
       >
         <ViewTransition>
-          <ThemeProvider>
-              {children}
-          </ThemeProvider>
+          <ApolloWrapper>
+            <ThemeProvider>
+                {children}
+            </ThemeProvider>
+          </ApolloWrapper>
         </ViewTransition>
       </body>
     </html>

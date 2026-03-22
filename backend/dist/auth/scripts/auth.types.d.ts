@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 export interface userResponse {
     email: string;
     password: string;
+    deletedAt?: Date | null;
 }
 export interface payloadType {
     email: string;

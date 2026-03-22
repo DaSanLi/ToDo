@@ -32,7 +32,7 @@ let AuthService = class AuthService {
     }
     async loginUser(body, res) {
         const { email } = body;
-        const user = await this.userRepository.findOneBy({ email });
+        const user = await this.userRepository.findOne({ where: { email, deletedAt: (0, typeorm_2.IsNull)() } });
         if (!user) {
             throw new common_1.BadRequestException("Usuario no encontrado");
         }
@@ -45,8 +45,11 @@ let AuthService = class AuthService {
     }
     async registerUser(body, res) {
         const { email } = body;
-        const user = await this.userRepository.findOneBy({ email });
+        const user = await this.userRepository.findOne({ where: { email }, withDeleted: true });
         if (user) {
+            if (user.deletedAt) {
+                throw new common_1.BadRequestException("Este email pertenece a una cuenta desactivada. Contacta a soporte.");
+            }
             throw new common_1.BadRequestException("Email en uso, ingresa otro");
         }
         const passwordHashed = await (0, auth_scripts_1.hashPassword)(body.password);
@@ -62,11 +65,11 @@ let AuthService = class AuthService {
         return { email: body.email };
     }
     async findUserByEmail(email) {
-        return await this.userRepository.findOneBy({ email });
+        return await this.userRepository.findOne({ where: { email, deletedAt: (0, typeorm_2.IsNull)() } });
     }
     async verifyAndRefreshToken(cookies, res) {
         const payload = await this.authCookiesService.verifyTokenFromCookie({ cookies });
-        const user = await this.userRepository.findOneBy({ email: payload.email });
+        const user = await this.userRepository.findOne({ where: { email: payload.email, deletedAt: (0, typeorm_2.IsNull)() } });
         if (!user) {
             throw new common_1.UnauthorizedException('Usuario no encontrado');
         }

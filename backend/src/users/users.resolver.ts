@@ -48,4 +48,10 @@ export class UsersResolver {
         return this.usersService.cancelSoftDelete(id)
     }
 
+
+    @Mutation(() => String, {description: "Borra un usuario de manera permanente"})
+    async hardDeleteUser(@Args('id') id: string): Promise<string> {
+        return this.usersService.hardDelete(id);
+    }
+
 }

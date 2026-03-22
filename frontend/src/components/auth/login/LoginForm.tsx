@@ -1,16 +1,13 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { fetchApi } from '@/src/scripts.ts/scripts'
+import { useLogin } from '@/src/graphql/hooks/useLogin'
 import { loginForm } from '@/src/app/auth/types/types'
-import { GraphQLError, GraphQLResponse, LoginResponse } from '@/src/scripts.ts/types'
 
 function LoginForm() {
     const [form, setForm] = useState<loginForm | null>(null)
-    const [error, setError] = useState<GraphQLError[] | null>(null)
-    const router = useRouter()
-
+    const [error, setError] = useState<string | null>(null)
+    const { handleLogin, loading, error: loginError } = useLogin()
 
     const saveForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -21,53 +18,36 @@ function LoginForm() {
         setForm(newForm)
     }
 
-
-    useEffect(() => {
+    const handleSubmit = async () => {
         if (form) {
-            const mutation = `mutation login($body: LoginDto!) {
-                login(body: $body) {
-                    email  
+            try {
+                await handleLogin(form)
+            } catch (err: any) {
+                if (err.graphQLErrors) {
+                    const messages = err.graphQLErrors.map((e: any) => e.message).join(', ')
+                    setError(messages)
+                } else {
+                    setError('Error al iniciar sesión')
                 }
-            }`
-            const variables = {
-                body: {
-                    email: form?.email,
-                    password: form?.password
-                }
-            };
-            fetchApi<GraphQLResponse<LoginResponse>>({
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query: mutation, variables }),
-                credentials: 'include'
-            }).then((data) => {
-                if (data?.data?.login?.email) {
-                    router.replace('/dashboard')
-                }else if(data?.errors){
-                    setError(data.errors)
-                }
-            })
+            }
         }
-    }, [form, router])
+    }
 
-
-    useEffect(() => {
-        if (error) {
-            setTimeout(() => {
-                setError(null)
-            }, 10000)
-        }
-    }, [error])
-
+    if (form) {
+        handleSubmit()
+    }
 
     return (
         <form className="space-y-4 md:space-y-6"
-            onSubmit={(e) => saveForm(e)}
+            onSubmit={(e) => {
+                saveForm(e)
+                setTimeout(() => {}, 100)
+            }}
         >
             {error !== null && (
-                <p className="absolute -top-10 left-0 text-white bg-red-800 rounded-2xl p-2">{
-                    error.map((item, index) => <p key={index}>{item.message}</p>)
-                }</p>
+                <p className="absolute -top-10 left-0 text-white bg-red-800 rounded-2xl p-2">
+                    {error}
+                </p>
             )}
             <div>
                 <label
@@ -129,9 +109,10 @@ function LoginForm() {
             </div>
             <button
                 type="submit"
+                disabled={loading}
                 className="w-full text-white bg-(--color-primary) hover:bg-(--color-secondary) focus:ring-4 focus:outline-none focus:ring-(--color-primary) font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             >
-                Entrar
+                {loading ? 'Cargando...' : 'Entrar'}
             </button>
             <p className="text-sm font-light text-(--text-secondary)">
                 ¿No tienes cuenta aún?{' '}

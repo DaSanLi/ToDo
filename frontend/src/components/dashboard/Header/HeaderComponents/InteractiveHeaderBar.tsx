@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react"
-import { URLBASE } from '@/src/scripts.ts/scripts'
+import { useLogout } from "@/src/graphql/hooks/useLogout"
 import Link from 'next/link'
 import Image from 'next/image'
 import optionsIcon from '../../../../assets/settings.png'
@@ -8,11 +8,7 @@ import optionsIcon from '../../../../assets/settings.png'
 
 function InteractiveHeaderBar() {
     const [optionsBar, setOptionsBar] = useState<boolean>(false)
-
-    async function Logout (){
-        await fetch(`${URLBASE}/auth/logout`, {credentials: 'include'})
-        .catch(e => console.error("No se pudo cerrar la sesión", e))
-    }
+    const { handleLogout } = useLogout()
 
     return (
         <>
@@ -31,7 +27,7 @@ function InteractiveHeaderBar() {
                     `}>
                 <Link href='/auth/login'
                     className="w-full py-2 bg-white/20 rounded-xl text-sm text-center"
-                    onClick={() => {Logout()}}>
+                    onClick={() => {handleLogout()}}>
                     Salir
                 </Link>
                 <Link href='/options'

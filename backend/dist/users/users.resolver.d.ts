@@ -11,4 +11,5 @@ export declare class UsersResolver {
     updateUser(id: string, body: UpdateUserDto): Promise<string>;
     softDeleteUSer(id: string): Promise<string>;
     cancelSoftDelete(id: string): Promise<string>;
+    hardDeleteUser(id: string): Promise<string>;
 }

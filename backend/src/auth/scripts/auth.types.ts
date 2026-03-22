@@ -5,6 +5,7 @@ import { ObjectType, Field } from '@nestjs/graphql';
 export interface userResponse {
     email: string;
     password: string;
+    deletedAt?: Date | null;
 }
 
 

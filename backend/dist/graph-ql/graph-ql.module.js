@@ -22,6 +22,7 @@ exports.GraphQlModule = GraphQlModule = __decorate([
                 driver: apollo_1.ApolloDriver,
                 autoSchemaFile: (0, path_1.join)(process.cwd(), './src/graph-ql/schema.gql'),
                 playground: false,
+                sortSchema: true,
                 plugins: [(0, default_1.ApolloServerPluginLandingPageLocalDefault)()],
                 context: ({ req, res }) => ({ req, res }),
             }),

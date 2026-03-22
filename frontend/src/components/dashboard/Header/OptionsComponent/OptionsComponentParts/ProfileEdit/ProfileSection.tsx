@@ -2,11 +2,15 @@
 import React from 'react'
 import UpdateBlackScreen from './UpdateBlackScreen'
 
-function ProfileSection() {
+type Props = {
+    userId: string;
+}
+
+function ProfileSection({ userId }: Props) {
     const [ blackOptionScreen, setBlackOptionScreen ] = React.useState<boolean>(false)
     return (
         <>
-            {blackOptionScreen && <UpdateBlackScreen setBlackOptionScreen={setBlackOptionScreen} />}
+            {blackOptionScreen && <UpdateBlackScreen userId={userId} setBlackOptionScreen={setBlackOptionScreen} />}
             <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-(--text-primary)">Perfil</h3>
                 <div className="flex flex-col gap-3">

@@ -42,6 +42,9 @@ let UsersResolver = class UsersResolver {
     cancelSoftDelete(id) {
         return this.usersService.cancelSoftDelete(id);
     }
+    async hardDeleteUser(id) {
+        return this.usersService.hardDelete(id);
+    }
 };
 exports.UsersResolver = UsersResolver;
 __decorate([
@@ -88,6 +91,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsersResolver.prototype, "cancelSoftDelete", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => String, { description: "Borra un usuario de manera permanente" }),
+    __param(0, (0, graphql_1.Args)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersResolver.prototype, "hardDeleteUser", null);
 exports.UsersResolver = UsersResolver = __decorate([
     (0, graphql_1.Resolver)(),
     __metadata("design:paramtypes", [users_service_1.UsersService])

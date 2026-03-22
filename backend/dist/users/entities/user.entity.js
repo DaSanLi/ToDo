@@ -18,6 +18,7 @@ let User = class User {
     id;
     email;
     password;
+    fullName;
     gender;
     deletedAt;
     tasks;
@@ -38,6 +39,11 @@ __decorate([
     (0, graphql_1.Field)(() => String, { description: "Contraseña de usuario" }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "varchar" }),
+    (0, graphql_1.Field)(() => String, { description: "Nombre completo del usuario" }),
+    __metadata("design:type", String)
+], User.prototype, "fullName", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "varchar", nullable: false }),
     (0, graphql_1.Field)(() => String, { description: "Género" }),

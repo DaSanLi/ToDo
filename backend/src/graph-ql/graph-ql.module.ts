@@ -11,6 +11,7 @@ import { GraphQLModule } from '@nestjs/graphql';
             driver: ApolloDriver,
             autoSchemaFile: join(process.cwd(), './src/graph-ql/schema.gql'),
             playground: false,
+            sortSchema: true,
             plugins: [ApolloServerPluginLandingPageLocalDefault()],
             context: ({ req, res }: { req: ReqTaskAuth; res: any }) => ({ req, res }),
         }),

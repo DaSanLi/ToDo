@@ -20,6 +20,7 @@ const auth_types_1 = require("./scripts/auth.types");
 const common_1 = require("@nestjs/common");
 const create_user_dto_1 = require("../users/dto/create-user.dto");
 const auth_cookies_service_1 = require("./scripts/auth-cookies.service");
+const user_entity_1 = require("../users/entities/user.entity");
 let AuthResolver = class AuthResolver {
     authService;
     authCookiesService;
@@ -38,6 +39,18 @@ let AuthResolver = class AuthResolver {
     async verification(context) {
         const cookies = context.req?.cookies;
         return this.authService.verifyAndRefreshToken(cookies, context.res);
+    }
+    async me(context) {
+        const payload = await this.authCookiesService.verifyTokenFromCookie(context.req);
+        const user = await this.authService.findUserByEmail(payload.email);
+        if (!user) {
+            throw new Error('Usuario no encontrado');
+        }
+        return user;
+    }
+    async logout(context) {
+        context.res.clearCookie('token');
+        return "Sesión cerrada exitosamente";
     }
 };
 exports.AuthResolver = AuthResolver;
@@ -66,6 +79,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthResolver.prototype, "verification", null);
+__decorate([
+    (0, graphql_1.Query)(() => user_entity_1.User, { description: "Obtiene el usuario actualmente autenticado" }),
+    __param(0, (0, graphql_1.Context)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthResolver.prototype, "me", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => String, { description: "Cierra la sesión del usuario clears la cookie" }),
+    __param(0, (0, graphql_1.Context)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthResolver.prototype, "logout", null);
 exports.AuthResolver = AuthResolver = __decorate([
     (0, graphql_1.Resolver)(),
     __metadata("design:paramtypes", [auth_service_1.AuthService,

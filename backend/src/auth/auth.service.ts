@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { LoginDto } from './dto/auth-login.dto';
 import { UserClass, userResponse, VerificationResponse, ResponseWithCookie, payloadType } from './scripts/auth.types';
@@ -21,7 +21,7 @@ export class AuthService {
 
     async loginUser(body: LoginDto, res: ResponseWithCookie): Promise<payloadType> {
         const { email } = body;
-        const user = await this.userRepository.findOneBy({ email });
+        const user = await this.userRepository.findOne({ where: { email, deletedAt: IsNull() } });
         if (!user) {
             throw new BadRequestException("Usuario no encontrado")
         }
@@ -39,8 +39,11 @@ export class AuthService {
 
     async registerUser(body: CreateUserDto, res: ResponseWithCookie): Promise<UserClass> {
         const { email } = body;
-        const user = await this.userRepository.findOneBy({ email });
+        const user = await this.userRepository.findOne({ where: { email }, withDeleted: true });
         if (user) {
+            if (user.deletedAt) {
+                throw new BadRequestException("Este email pertenece a una cuenta desactivada. Contacta a soporte.")
+            }
             throw new BadRequestException("Email en uso, ingresa otro")
         }
         
@@ -60,13 +63,13 @@ export class AuthService {
     }
 
     async findUserByEmail(email: string): Promise<userResponse | null> {
-        return await this.userRepository.findOneBy({ email });
+        return await this.userRepository.findOne({ where: { email, deletedAt: IsNull() } });
     }
 
     async verifyAndRefreshToken(cookies: Record<string, string>, res: ResponseWithCookie): Promise<VerificationResponse> {
         const payload = await this.authCookiesService.verifyTokenFromCookie({ cookies } as any);
 
-        const user = await this.userRepository.findOneBy({ email: payload.email });
+        const user = await this.userRepository.findOne({ where: { email: payload.email, deletedAt: IsNull() } });
 
         if (!user) {
             throw new UnauthorizedException('Usuario no encontrado');
