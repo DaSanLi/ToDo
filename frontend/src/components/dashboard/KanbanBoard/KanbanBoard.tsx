@@ -20,6 +20,7 @@ import { useMoveTask } from '@/src/graphql/hooks/useMoveTask'
 
 interface Props {
     tasks: Task[]
+    className?: string
 }
 
 const COLUMNS: { id: taskStatus; title: string }[] = [
@@ -29,7 +30,7 @@ const COLUMNS: { id: taskStatus; title: string }[] = [
     { id: 'completada', title: 'Completada' },
 ]
 
-export default function KanbanBoard({ tasks }: Props) {
+export default function KanbanBoard({ tasks, className = '' }: Props) {
     const [activeTask, setActiveTask] = useState<Task | null>(null)
     const [localTasks, setLocalTasks] = useState<Task[]>(tasks)
     const localTasksRef = useRef<Task[]>(localTasks)
@@ -189,7 +190,7 @@ export default function KanbanBoard({ tasks }: Props) {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
         >
-            <div className="flex gap-3 overflow-x-auto pb-4 px-2 snap-x snap-mandatory">
+            <div className={`flex gap-4 lg:gap-8 h-full overflow-x-auto pb-4 px-3 lg:pb-8 lg:px-6 snap-x snap-mandatory ${className}`}>
                 {COLUMNS.map((column) => (
                     <KanbanColumn
                         key={column.id}

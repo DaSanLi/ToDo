@@ -16,18 +16,17 @@ export default function KanbanColumn({ id, title, tasks }: Props) {
     return (
         <div
             ref={setNodeRef}
-            className={`shrink-0 w-[85vw] sm:w-72 md:w-80 flex flex-col gap-3 p-3 sm:p-4 rounded-xl 
+            className={`min-w-72 lg:min-w-80 flex-1 h-full flex flex-col gap-4 lg:gap-6 p-3 mt-2 sm:p-4 lg:p-8 rounded-xl 
                 bg-(--bg-secondary) border border-(--border-color)
-                snap-center
                 ${isOver ? 'ring-2 ring-(--color-primary) bg-(--color-primary)/5' : ''}`}
         >
-            <header className="flex items-center justify-between pb-2 border-b border-(--border-color)">
-                <h2 className="text-(--text-primary) font-semibold text-sm sm:text-base">{title}</h2>
-                <span className="px-2 py-0.5 text-xs rounded-full bg-(--color-primary)/20 text-(--color-primary)">
+            <header className="flex items-center justify-between pb-3 border-b border-(--border-color)">
+                <h2 className="text-(--text-primary) font-semibold text-base sm:text-lg lg:text-xl">{title}</h2>
+                <span className="px-2 lg:px-3 py-0.5 text-sm lg:text-base rounded-full bg-(--color-primary)/20 text-(--color-primary)">
                     {tasks.length}
                 </span>
             </header>
-            <div className="flex flex-col gap-2 sm:gap-3 min-h-37.5 sm:min-h-50 overflow-y-auto">
+            <div className="flex flex-col gap-3 lg:gap-4 min-h-40 sm:min-h-50 lg:min-h-64 overflow-y-auto">
                 <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
                     {tasks.length === 0 ? (
                         <div className="flex items-center justify-center h-20 text-(--text-secondary) text-sm opacity-50">
@@ -43,3 +42,5 @@ export default function KanbanColumn({ id, title, tasks }: Props) {
         </div>
     )
 }
+
+

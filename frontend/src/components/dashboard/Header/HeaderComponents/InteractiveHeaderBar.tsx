@@ -12,29 +12,29 @@ function InteractiveHeaderBar() {
 
     return (
         <>
-            <div className="absolute right-5 top-1.5 flex flex-row ">
-                <button className="bg-(--color-primary) hover:bg-(--color-secondary) rounded-2xl p-2"
+            <div className="relative">
+                <button className="bg-(--color-primary) hover:bg-(--color-secondary) rounded-2xl p-2 lg:p-3"
                     onClick={() => setOptionsBar(prev => !prev)}
                 >
-                    <Image src={optionsIcon} alt="Options Icon" className="w-6 h-6"/>
+                    <Image src={optionsIcon} alt="Options Icon" className="w-6 h-6 lg:w-8 lg:h-8"/>
                 </button>
+                <aside className={`absolute right-0 top-full mt-2 w-48 lg:w-56 bg-(--color-primary) rounded-2xl shadow-lg flex flex-col gap-3 p-4 z-50
+                        ${optionsBar
+                        ? 'opacity-100 translate-y-0 pointer-events-auto'
+                        : 'opacity-0 -translate-y-4 pointer-events-none'
+                    }   
+                        `}>
+                    <Link href='/auth/login'
+                        className="w-full py-2 bg-white/20 rounded-xl text-sm lg:text-base text-center"
+                        onClick={() => {handleLogout()}}>
+                        Salir
+                    </Link>
+                    <Link href='/options'
+                        className="w-full py-2 bg-white/20 rounded-xl text-sm lg:text-base text-center">
+                        Opciones
+                    </Link>
+                </aside>
             </div>
-            <aside className={`text-(--bg-secondary) absolute right-5 top-full mt-3 w-48 bg-(--color-primary) rounded-2xl shadow-lg flex flex-col gap-3 p-4 transition-all duration-300 ease-out
-                    ${optionsBar
-                    ? 'opacity-100 translate-y-0 pointer-events-auto'
-                    : 'opacity-0 -translate-y-4 pointer-events-none'
-                }   
-                    `}>
-                <Link href='/auth/login'
-                    className="w-full py-2 bg-white/20 rounded-xl text-sm text-center"
-                    onClick={() => {handleLogout()}}>
-                    Salir
-                </Link>
-                <Link href='/options'
-                    className="w-full py-2 bg-white/20 rounded-xl text-sm text-center">
-                    Opciones
-                </Link>
-            </aside>
         </>
     )
 }
