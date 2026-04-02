@@ -244,6 +244,19 @@ CREATE TABLE tasks (
 
 ---
 
+## Imágenes de la Aplicación
+
+### Pantalla de Login
+![Login](./images/image1.png)
+
+### Dashboard con Kanban
+![Dashboard](./images/image2.png)
+
+### Apartado de ajustes
+![Tasks](./images/image3.png)
+
+---
+
 ## Notas
 
 - La aplicación implementa **soft delete** en ambas entidades
