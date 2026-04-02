@@ -31,7 +31,7 @@ export class AuthService {
         const payload = { email: user.email }
         const token = await this.jwtService.signAsync(payload)
         
-        // this.authCookiesService.setTokenCookie(res, token)
+        this.authCookiesService.setTokenCookie(res, token)
         
         return { email, token }
     }

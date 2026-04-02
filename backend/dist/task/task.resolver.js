@@ -40,6 +40,10 @@ let TaskResolver = class TaskResolver {
     removeTask(id, req) {
         return this.taskService.removeTask(id, req.user);
     }
+    moveTask(id, moveTaskDto, req) {
+        const { status, orderInStatus } = moveTaskDto;
+        return this.taskService.moveTask(id, { status, orderInStatus }, req.user);
+    }
 };
 exports.TaskResolver = TaskResolver;
 __decorate([
@@ -83,6 +87,16 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], TaskResolver.prototype, "removeTask", null);
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe),
+    (0, graphql_1.Mutation)(() => String, { description: "Mueve una tarea a un nuevo estado y orden" }),
+    __param(0, (0, graphql_1.Args)('id')),
+    __param(1, (0, graphql_1.Args)('moveTaskDto')),
+    __param(2, (0, graphql_1.Context)('req')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_task_dto_1.UpdateTaskDto, Object]),
+    __metadata("design:returntype", void 0)
+], TaskResolver.prototype, "moveTask", null);
 exports.TaskResolver = TaskResolver = __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, graphql_1.Resolver)(),

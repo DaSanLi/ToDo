@@ -44,4 +44,11 @@ export class TaskResolver {
         return this.taskService.removeTask(id, req.user);
     }
 
+    @UsePipes(new ValidationPipe)
+    @Mutation(() => String, {description: "Mueve una tarea a un nuevo estado y orden"})
+    moveTask(@Args('id') id: string, @Args('moveTaskDto') moveTaskDto: UpdateTaskDto, @Context('req') req: ReqTaskAuth) {
+        const { status, orderInStatus } = moveTaskDto
+        return this.taskService.moveTask(id, { status, orderInStatus }, req.user);
+    }
+
 }

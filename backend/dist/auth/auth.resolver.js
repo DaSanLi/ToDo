@@ -30,7 +30,6 @@ let AuthResolver = class AuthResolver {
     }
     async login(body, context) {
         const payload = await this.authService.loginUser(body, context.res);
-        this.authCookiesService.setTokenCookie(context.res, payload.token);
         return { email: payload.email };
     }
     async register(body, context) {

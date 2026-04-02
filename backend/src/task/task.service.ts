@@ -6,6 +6,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity'
 import { User } from '../users/entities/user.entity'
 import { BadRequestFunction, InternalExpectionFunction, UnauthorizedFunction } from './scripts/task.scripts';
+import { taskStatus } from './scripts/task.types';
 
 @Injectable()
 export class TaskService {
@@ -41,8 +42,9 @@ export class TaskService {
   async findOneTask(id: string, { email }: { email: string }): Promise<CreateTaskDto> {
     const task: Task | null = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] })
     if (!task) return BadRequestFunction("No se ha encontrado ninguna tarea")
-    const unauthorizedUser = email === task.user.email ? email : ""
-    if (unauthorizedUser) return UnauthorizedFunction("Solo el creador de la tarea puede ver la misma")
+    if (email !== task.user.email) {
+      return UnauthorizedFunction("Solo el creador de la tarea puede ver la misma")
+    }
     return task
   }
 
@@ -50,9 +52,9 @@ export class TaskService {
   async updateTask(id: string, updateTaskDto: UpdateTaskDto, { email }: { email: string }): Promise<string> {
     const task: Task | null = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] })
     if(!task) return BadRequestFunction("No se ha encontrado ninguna tarea")
-    //si el username pasado por el token no coincide con el guardado en la relación user - task aplicará excepción
-    const unauthorizedUser = email === task?.user?.email ? task?.user : ""
-    if(unauthorizedUser) return UnauthorizedFunction("Solo el creador de la tarea puede modificar la misma")
+    if (email !== task?.user?.email) {
+      return UnauthorizedFunction("Solo el creador de la tarea puede modificar la misma")
+    }
     try {
       await this.TaskRepository.update(id, { ...updateTaskDto })
     } catch {
@@ -65,13 +67,35 @@ export class TaskService {
   async removeTask(id: string, { email }: { email: string }): Promise<string> {
     const task: Task | null = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] })
     if (!task) return BadRequestFunction("No se ha encontrado ninguna tarea")
-    const unauthorizedUser = email === task?.user?.email ? task?.user : ""
-    if(!unauthorizedUser) return UnauthorizedFunction("Solo el creador de la tarea puede eliminar la misma")
+    if (email !== task?.user?.email) {
+      return UnauthorizedFunction("Solo el creador de la tarea puede eliminar la misma")
+    }
     try {
       await this.TaskRepository.remove(task)
     } catch {
       InternalExpectionFunction("Error al borrar la tarea")
     }
     return "Tarea borrada satisfactoriamente"
+  }
+
+  async moveTask(id: string, {status, orderInStatus}: { status: taskStatus|undefined; orderInStatus: number|undefined }, { email }: { email: string }): Promise<string> {
+    const task: Task | null = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] })
+    if (!task) return BadRequestFunction("No se ha encontrado ninguna tarea")
+    
+    // CORRECCIÓN: Verificar que el usuario es el creador
+    if (email !== task?.user?.email) {
+      return UnauthorizedFunction("Solo el creador de la tarea puede mover la misma")
+    }
+    
+    try {
+      await this.TaskRepository.update(id, 
+        { 
+          orderInStatus: orderInStatus ? orderInStatus : task.orderInStatus,
+          status: status ? status : task.status,
+        })
+    } catch {
+      InternalExpectionFunction("La tarea no se ha podido mover")
+    }
+    return "Tarea movida satisfactoriamente"
   }
 }

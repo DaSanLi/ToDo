@@ -1,12 +1,6 @@
 import { useQuery } from '@apollo/client/react';
 import { FIND_ALL_TASKS } from '../queries/tasks';
-
-interface Task {
-  id: string;
-  title: string;
-  priority: string;
-  description: string;
-}
+import { Task } from '../../components/dashboard/TaskList/types';
 
 interface FindAllTasksData {
   findAllTasks: Task[];

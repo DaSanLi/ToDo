@@ -22,7 +22,6 @@ export class AuthResolver {
         @Context() context: { res: ResponseWithCookie }
     ): Promise<UserClass> {
         const payload = await this.authService.loginUser(body, context.res);
-        this.authCookiesService.setTokenCookie(context.res, payload.token)
         return {email: payload.email}
     }
 

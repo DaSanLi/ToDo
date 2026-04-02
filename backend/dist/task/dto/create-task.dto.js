@@ -17,6 +17,8 @@ let CreateTaskDto = class CreateTaskDto {
     title;
     priority;
     description;
+    status = task_types_1.taskStatus.pendiente;
+    orderInStatus = 0;
 };
 exports.CreateTaskDto = CreateTaskDto;
 __decorate([
@@ -38,6 +40,14 @@ __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
 ], CreateTaskDto.prototype, "description", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => String, { description: "Estado de la tarea en el tablero Kanban" }),
+    __metadata("design:type", String)
+], CreateTaskDto.prototype, "status", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => graphql_1.Int, { description: "Orden de la tarea dentro de su estado" }),
+    __metadata("design:type", Number)
+], CreateTaskDto.prototype, "orderInStatus", void 0);
 exports.CreateTaskDto = CreateTaskDto = __decorate([
     (0, graphql_1.InputType)({ description: "Para crear una nueva tarea se deben proporcionar todos los campos" })
 ], CreateTaskDto);

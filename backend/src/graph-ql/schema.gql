@@ -6,10 +6,16 @@
 input CreateTaskDto {
   description: String!
 
+  """Orden de la tarea dentro de su estado"""
+  orderInStatus: Int! = 0
+
   """
   Solo hay 4 estados para nombrar este campo (bajo, medio, alto, urgente)
   """
   priority: String!
+
+  """Estado de la tarea en el tablero Kanban"""
+  status: String! = "pendiente"
   title: String!
 }
 
@@ -48,6 +54,9 @@ type Mutation {
 
   """Cierra la sesión del usuario clears la cookie"""
   logout: String!
+
+  """Mueve una tarea a un nuevo estado y orden"""
+  moveTask(id: String!, moveTaskDto: UpdateTaskDto!): String!
 
   """Registra un usuario y devuelve un token de acceso"""
   register(body: CreateUserDto!): UserClass!
@@ -95,8 +104,14 @@ type Task {
   """Identificador unico de la entidad"""
   id: ID!
 
+  """Orden de la tarea dentro de su estado"""
+  orderInStatus: Int!
+
   """Prioridad de la tarea (baja, media, alta o urgente)"""
   priority: String!
+
+  """Estado de la tarea en el tablero Kanban"""
+  status: String!
 
   """Titulo de la tarea"""
   title: String!
@@ -105,10 +120,16 @@ type Task {
 input UpdateTaskDto {
   description: String
 
+  """Orden de la tarea dentro de su estado"""
+  orderInStatus: Int = 0
+
   """
   Solo hay 4 estados para nombrar este campo (bajo, medio, alto, urgente)
   """
   priority: String
+
+  """Estado de la tarea en el tablero Kanban"""
+  status: String = "pendiente"
   title: String
 }
 

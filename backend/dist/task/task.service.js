@@ -52,18 +52,18 @@ let TaskService = class TaskService {
         const task = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] });
         if (!task)
             return (0, task_scripts_1.BadRequestFunction)("No se ha encontrado ninguna tarea");
-        const unauthorizedUser = email === task.user.email ? email : "";
-        if (unauthorizedUser)
+        if (email !== task.user.email) {
             return (0, task_scripts_1.UnauthorizedFunction)("Solo el creador de la tarea puede ver la misma");
+        }
         return task;
     }
     async updateTask(id, updateTaskDto, { email }) {
         const task = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] });
         if (!task)
             return (0, task_scripts_1.BadRequestFunction)("No se ha encontrado ninguna tarea");
-        const unauthorizedUser = email === task?.user?.email ? task?.user : "";
-        if (unauthorizedUser)
+        if (email !== task?.user?.email) {
             return (0, task_scripts_1.UnauthorizedFunction)("Solo el creador de la tarea puede modificar la misma");
+        }
         try {
             await this.TaskRepository.update(id, { ...updateTaskDto });
         }
@@ -76,9 +76,9 @@ let TaskService = class TaskService {
         const task = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] });
         if (!task)
             return (0, task_scripts_1.BadRequestFunction)("No se ha encontrado ninguna tarea");
-        const unauthorizedUser = email === task?.user?.email ? task?.user : "";
-        if (!unauthorizedUser)
+        if (email !== task?.user?.email) {
             return (0, task_scripts_1.UnauthorizedFunction)("Solo el creador de la tarea puede eliminar la misma");
+        }
         try {
             await this.TaskRepository.remove(task);
         }
@@ -86,6 +86,24 @@ let TaskService = class TaskService {
             (0, task_scripts_1.InternalExpectionFunction)("Error al borrar la tarea");
         }
         return "Tarea borrada satisfactoriamente";
+    }
+    async moveTask(id, { status, orderInStatus }, { email }) {
+        const task = await this.TaskRepository.findOne({ where: { id }, relations: ['user'] });
+        if (!task)
+            return (0, task_scripts_1.BadRequestFunction)("No se ha encontrado ninguna tarea");
+        if (email !== task?.user?.email) {
+            return (0, task_scripts_1.UnauthorizedFunction)("Solo el creador de la tarea puede mover la misma");
+        }
+        try {
+            await this.TaskRepository.update(id, {
+                orderInStatus: orderInStatus ? orderInStatus : task.orderInStatus,
+                status: status ? status : task.status,
+            });
+        }
+        catch {
+            (0, task_scripts_1.InternalExpectionFunction)("La tarea no se ha podido mover");
+        }
+        return "Tarea movida satisfactoriamente";
     }
 };
 exports.TaskService = TaskService;

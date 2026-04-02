@@ -1,13 +1,15 @@
 'use client'
 import { useTasks } from "@/src/graphql/hooks/useTasks"
 import NewTaskSection from "../NewTask/NewTaskSection"
-import Tasks from "./Tasks"
+import KanbanBoard from "../KanbanBoard/KanbanBoard"
 
 function TaskList() {
     const { tasks, loading, error } = useTasks()
 
     if (loading) return <p>Cargando tareas...</p>
     if (error) return <p>Error al cargar tareas</p>
+
+    
 
     return (
         <section
@@ -20,15 +22,7 @@ function TaskList() {
                 </h1>
                 <NewTaskSection />
             </header>
-            <div
-                className="grid gap-4
-                grid-cols-1
-                sm:grid-cols-2
-                lg:grid-cols-3
-                xl:grid-cols-4"
-            >
-                <Tasks tasks={tasks} />
-            </div>
+            <KanbanBoard tasks={tasks} />
         </section>
     )
 }

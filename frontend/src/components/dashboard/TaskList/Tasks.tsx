@@ -1,7 +1,7 @@
 'use client'
 import { useDeleteTask } from "@/src/graphql/hooks/useDeleteTask"
 import { Task } from "./types"
-import React, { useEffect, useState } from "react"
+import { useState } from "react"
 import NewTask from "../NewTask/NewTask"
 
 interface Props {
@@ -21,8 +21,6 @@ function Tasks({ tasks }: Props) {
     async function deleteTask(id: string) {
         await handleDeleteTask(id)
     }
-
-    useEffect(() => { console.log(tasks) }, [tasks])
 
     return (
         <>

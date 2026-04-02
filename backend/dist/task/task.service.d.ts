@@ -3,6 +3,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
 import { User } from '../users/entities/user.entity';
+import { taskStatus } from './scripts/task.types';
 export declare class TaskService {
     private readonly TaskRepository;
     private readonly UserRepository;
@@ -20,6 +21,12 @@ export declare class TaskService {
         email: string;
     }): Promise<string>;
     removeTask(id: string, { email }: {
+        email: string;
+    }): Promise<string>;
+    moveTask(id: string, { status, orderInStatus }: {
+        status: taskStatus | undefined;
+        orderInStatus: number | undefined;
+    }, { email }: {
         email: string;
     }): Promise<string>;
 }

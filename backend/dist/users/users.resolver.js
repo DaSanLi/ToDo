@@ -17,6 +17,7 @@ const graphql_1 = require("@nestjs/graphql");
 const users_service_1 = require("./users.service");
 const user_entity_1 = require("./entities/user.entity");
 const update_user_dto_1 = require("./dto/update-user.dto");
+const common_1 = require("@nestjs/common");
 let UsersResolver = class UsersResolver {
     usersService;
     constructor(usersService) {
@@ -56,8 +57,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersResolver.prototype, "findOneUser", null);
 __decorate([
-    UsePipes(new ValidationPipe),
-    Mutation(() => String, { description: "Actualiza las credenciales de un usuario existente" }),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe),
+    (0, graphql_1.Mutation)(() => String, { description: "Actualiza las credenciales de un usuario existente" }),
     __param(0, (0, graphql_1.Args)('id')),
     __param(1, (0, graphql_1.Args)('body')),
     __metadata("design:type", Function),
@@ -65,21 +66,21 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersResolver.prototype, "updateUser", null);
 __decorate([
-    Mutation(() => String, { description: "Borra un usuario de manera blanda" }),
+    (0, graphql_1.Mutation)(() => String, { description: "Borra un usuario de manera blanda" }),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsersResolver.prototype, "softDeleteUSer", null);
 __decorate([
-    Mutation(() => String, { description: "Cancela el borrado blando de un usuario" }),
+    (0, graphql_1.Mutation)(() => String, { description: "Cancela el borrado blando de un usuario" }),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsersResolver.prototype, "cancelSoftDelete", null);
 __decorate([
-    Mutation(() => String, { description: "Borra un usuario de manera permanente" }),
+    (0, graphql_1.Mutation)(() => String, { description: "Borra un usuario de manera permanente" }),
     __param(0, (0, graphql_1.Args)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

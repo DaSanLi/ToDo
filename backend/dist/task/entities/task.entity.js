@@ -20,6 +20,8 @@ let Task = class Task {
     title;
     priority;
     description;
+    status = task_types_1.taskStatus.pendiente;
+    orderInStatus = 0;
     deletedAt;
 };
 exports.Task = Task;
@@ -29,9 +31,7 @@ __decorate([
     __metadata("design:type", String)
 ], Task.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.tasks, {
-        onDelete: 'CASCADE'
-    }),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.tasks, { onDelete: 'CASCADE' }),
     (0, typeorm_1.JoinColumn)({ name: 'userId' }),
     __metadata("design:type", user_entity_1.User)
 ], Task.prototype, "user", void 0);
@@ -50,6 +50,16 @@ __decorate([
     (0, graphql_1.Field)(() => String, { description: "Descripción referente a la tarea" }),
     __metadata("design:type", String)
 ], Task.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', default: 'pendiente' }),
+    (0, graphql_1.Field)(() => String, { description: "Estado de la tarea en el tablero Kanban" }),
+    __metadata("design:type", String)
+], Task.prototype, "status", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', default: 0 }),
+    (0, graphql_1.Field)(() => graphql_1.Int, { description: "Orden de la tarea dentro de su estado" }),
+    __metadata("design:type", Number)
+], Task.prototype, "orderInStatus", void 0);
 __decorate([
     (0, typeorm_1.DeleteDateColumn)(),
     __metadata("design:type", Object)

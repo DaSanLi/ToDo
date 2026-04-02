@@ -41,6 +41,7 @@ let AuthService = class AuthService {
             return (0, task_scripts_1.BadRequestFunction)("La contraseña ingresada no coincide con la registrada");
         const payload = { email: user.email };
         const token = await this.jwtService.signAsync(payload);
+        this.authCookiesService.setTokenCookie(res, token);
         return { email, token };
     }
     async registerUser(body, res) {

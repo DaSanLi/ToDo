@@ -17,3 +17,9 @@ export const REMOVE_TASK = gql`
     removeTask(id: $id)
   }
 `;
+
+export const MOVE_TASK = gql`
+  mutation MoveTask($id: String!, $moveTaskDto: UpdateTaskDto!) {
+    moveTask(id: $id, moveTaskDto: $moveTaskDto)
+  }
+`;

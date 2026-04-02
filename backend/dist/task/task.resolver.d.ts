@@ -11,4 +11,5 @@ export declare class TaskResolver {
     findOneTask(id: string, req: ReqTaskAuth): Promise<CreateTaskDto>;
     updateTask(id: string, updateTaskDto: UpdateTaskDto, req: ReqTaskAuth): Promise<string>;
     removeTask(id: string, req: ReqTaskAuth): Promise<string>;
+    moveTask(id: string, moveTaskDto: UpdateTaskDto, req: ReqTaskAuth): Promise<string>;
 }

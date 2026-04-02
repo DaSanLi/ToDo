@@ -8,6 +8,13 @@ export enum priorityState {
     urgente = "urgente"
 }
 
+export enum taskStatus {
+    pendiente = "pendiente",
+    asignada = "asignada",
+    realizando = "realizando",
+    completada = "completada"
+}
+
 
 export interface ReqTaskAuth extends Request {
     user: {

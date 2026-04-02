@@ -7,6 +7,8 @@ export const FIND_ALL_TASKS = gql`
       title
       priority
       description
+      status
+      orderInStatus
     }
   }
 `;
@@ -18,6 +20,8 @@ export const FIND_ONE_TASK = gql`
       title
       priority
       description
+      status
+      orderInStatus
     }
   }
 `;
